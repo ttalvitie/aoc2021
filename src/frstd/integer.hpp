@@ -17,12 +17,7 @@ namespace integer_ {
 #error Only GCC is supported
 #endif
 
-inline void overflow() {
-#ifdef FRSTD_DEBUG
-    abort();
-#endif
-    __builtin_unreachable();
-}
+inline void overflow();
 
 template <typename...>
 struct Void {};
@@ -179,4 +174,21 @@ using iszw = integer_::ISizeWrappers::SignedWrap;
 using usz = integer_::ISizeWrappers::Unsigned;
 using uszw = integer_::ISizeWrappers::UnsignedWrap;
 
+}
+
+#include "driver.hpp"
+
+namespace frstd {
+namespace integer_ {
+
+inline void overflow() {
+#ifdef FRSTD_DEBUG
+    const char msg[] = "FATAL ERROR: Integer overflow occurred\n";
+    frstd::driver::writeStderr(msg, sizeof(msg) - 1);
+    frstd::driver::abortProgram();
+#endif
+    __builtin_unreachable();
+}
+
+}
 }

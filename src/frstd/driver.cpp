@@ -5,7 +5,7 @@
 #include <cstring>
 
 namespace frstd {
-namespace driver_ {
+namespace driver {
 
 void abortProgram() {
     abort();
@@ -30,7 +30,7 @@ void* allocateMemory(const usz size) {
     }
     void* ret = malloc(sizeRaw);
     if(ret == nullptr) {
-        const char* msg = "FATAL DRIVER ERROR: Memory allocation failed";
+        const char* msg = "FATAL ERROR: Memory allocation failed";
         writeStderr(msg, strlen(msg));
         abortProgram();
     }
