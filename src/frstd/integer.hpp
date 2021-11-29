@@ -176,7 +176,7 @@ using I8Wrappers = TypeChooser<8>::Type;
 using I16Wrappers = TypeChooser<16>::Type;
 using I32Wrappers = TypeChooser<32>::Type;
 using I64Wrappers = TypeChooser<64>::Type;
-using ISizeWrappers = TypeChooser<sizeof(void*)>::Type;
+using ISizeWrappers = TypeChooser<8 * sizeof(void*)>::Type;
 
 struct Dummy {};
 static_assert(sizeof(void*) == sizeof(Dummy*));
@@ -213,7 +213,7 @@ namespace integer_ {
 
 inline void divByZero() {
 #ifdef FRSTD_DEBUG
-    const char msg[] = "FATAL ERROR: Division by zero occurred\n";
+    const char msg[] = "FAIL: Division by zero occurred\n";
     frstd::driver::writeStderr(msg, sizeof(msg) - 1);
     frstd::driver::abortProgram();
 #endif
@@ -222,7 +222,7 @@ inline void divByZero() {
 
 inline void overflow() {
 #ifdef FRSTD_DEBUG
-    const char msg[] = "FATAL ERROR: Integer overflow occurred\n";
+    const char msg[] = "FAIL: Integer overflow occurred\n";
     frstd::driver::writeStderr(msg, sizeof(msg) - 1);
     frstd::driver::abortProgram();
 #endif

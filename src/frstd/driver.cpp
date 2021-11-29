@@ -30,7 +30,7 @@ void* allocateMemory(const usz size) {
     }
     void* ret = malloc(sizeRaw);
     if(ret == nullptr) {
-        const char* msg = "FATAL ERROR: Memory allocation failed";
+        const char* msg = "FAIL: Memory allocation failed";
         writeStderr(msg, strlen(msg));
         abortProgram();
     }
