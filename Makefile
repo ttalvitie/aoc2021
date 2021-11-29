@@ -1,6 +1,6 @@
 CXX ?= g++
 CFLAGS_COMMON := -std=c++17 -Wall -Wextra
-CFLAGS_debug := $(CFLAGS_COMMON) -g -O0
+CFLAGS_debug := $(CFLAGS_COMMON) -g -O0 -DFRSTD_DEBUG
 CFLAGS_release := $(CFLAGS_COMMON) -O3 -DNDEBUG
 LDFLAGS_COMMON :=
 LDFLAGS_debug := $(LDFLAGS_COMMON)
