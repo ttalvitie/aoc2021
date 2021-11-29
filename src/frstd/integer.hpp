@@ -1,8 +1,5 @@
 #pragma once
 
-// TODO: remove
-#include <cstdlib>
-
 namespace frstd {
 
 namespace integer_ {
@@ -17,6 +14,7 @@ namespace integer_ {
 #error Only GCC is supported
 #endif
 
+inline void divByZero();
 inline void overflow();
 
 template <typename...>
@@ -35,9 +33,17 @@ struct UnsignedInt {
     template <typename T, typename = Void<typename IsIntWrapper<T>::Yes>>
     explicit UnsignedInt(T src) { if(__builtin_add_overflow(src.raw, 0, &raw)) { overflow(); } }
 
+    bool operator==(UnsignedInt other) const { return raw == other.raw; }
+    bool operator!=(UnsignedInt other) const { return raw != other.raw; }
+    bool operator<(UnsignedInt other) const { return raw < other.raw; }
+    bool operator>(UnsignedInt other) const { return raw > other.raw; }
+    bool operator<=(UnsignedInt other) const { return raw <= other.raw; }
+    bool operator>=(UnsignedInt other) const { return raw >= other.raw; }
+
     UnsignedInt operator+(UnsignedInt other) const { U ret; if(__builtin_add_overflow(raw, other.raw, &ret)) { overflow(); } return ret; }
     UnsignedInt operator-(UnsignedInt other) const { U ret; if(__builtin_sub_overflow(raw, other.raw, &ret)) { overflow(); } return ret; }
     UnsignedInt operator*(UnsignedInt other) const { U ret; if(__builtin_mul_overflow(raw, other.raw, &ret)) { overflow(); } return ret; }
+    UnsignedInt operator/(UnsignedInt other) const { if(other == 0) { divByZero(); } return raw / other.raw; }
 };
 
 template <typename U, typename S>
@@ -50,10 +56,18 @@ struct SignedInt {
     template <typename T, typename = Void<typename IsIntWrapper<T>::Yes>>
     explicit SignedInt(T src) { if(__builtin_add_overflow(src.raw, 0, &raw)) { overflow(); } }
 
+    bool operator==(SignedInt other) const { return raw == other.raw; }
+    bool operator!=(SignedInt other) const { return raw != other.raw; }
+    bool operator<(SignedInt other) const { return raw < other.raw; }
+    bool operator>(SignedInt other) const { return raw > other.raw; }
+    bool operator<=(SignedInt other) const { return raw <= other.raw; }
+    bool operator>=(SignedInt other) const { return raw >= other.raw; }
+
     SignedInt operator-() const { S ret; if(__builtin_sub_overflow((S)0, raw, &ret)) { overflow(); } return ret; }
     SignedInt operator+(SignedInt other) const { S ret; if(__builtin_add_overflow(raw, other.raw, &ret)) { overflow(); } return ret; }
     SignedInt operator-(SignedInt other) const { S ret; if(__builtin_sub_overflow(raw, other.raw, &ret)) { overflow(); } return ret; }
     SignedInt operator*(SignedInt other) const { S ret; if(__builtin_mul_overflow(raw, other.raw, &ret)) { overflow(); } return ret; }
+    SignedInt operator/(SignedInt other) const { if(other == 0) { divByZero(); } if(other == -1) { return -(*this); } return raw / other.raw; }
 };
 
 template <typename U, typename S>
@@ -67,10 +81,18 @@ struct UnsignedWrapInt {
     template <typename T, typename = Void<typename IsIntWrapper<T>::Yes>>
     explicit UnsignedWrapInt(T src) : raw((U)src.raw) { }
 
+    bool operator==(UnsignedWrapInt other) const { return raw == other.raw; }
+    bool operator!=(UnsignedWrapInt other) const { return raw != other.raw; }
+    bool operator<(UnsignedWrapInt other) const { return raw < other.raw; }
+    bool operator>(UnsignedWrapInt other) const { return raw > other.raw; }
+    bool operator<=(UnsignedWrapInt other) const { return raw <= other.raw; }
+    bool operator>=(UnsignedWrapInt other) const { return raw >= other.raw; }
+
     UnsignedWrapInt operator-() const { return -raw; }
     UnsignedWrapInt operator+(UnsignedWrapInt other) const { return raw + other.raw; }
     UnsignedWrapInt operator-(UnsignedWrapInt other) const { return raw - other.raw; }
     UnsignedWrapInt operator*(UnsignedWrapInt other) const { return raw * other.raw; }
+    UnsignedWrapInt operator/(UnsignedWrapInt other) const { if(other == 0) { divByZero(); } return raw / other.raw; }
 };
 
 template <typename U, typename S>
@@ -84,10 +106,18 @@ struct SignedWrapInt {
     template <typename T, typename = Void<typename IsIntWrapper<T>::Yes>>
     explicit SignedWrapInt(T src) : raw((S)src.raw) { }
 
+    bool operator==(SignedWrapInt other) const { return raw == other.raw; }
+    bool operator!=(SignedWrapInt other) const { return raw != other.raw; }
+    bool operator<(SignedWrapInt other) const { return raw < other.raw; }
+    bool operator>(SignedWrapInt other) const { return raw > other.raw; }
+    bool operator<=(SignedWrapInt other) const { return raw <= other.raw; }
+    bool operator>=(SignedWrapInt other) const { return raw >= other.raw; }
+
     SignedWrapInt operator-() const { return (S)(-(U)raw); }
     SignedWrapInt operator+(SignedWrapInt other) const { return (S)((U)raw + (U)other.raw); }
     SignedWrapInt operator-(SignedWrapInt other) const { return (S)((U)raw - (U)other.raw); }
     SignedWrapInt operator*(SignedWrapInt other) const { return (S)((U)raw * (U)other.raw); }
+    SignedWrapInt operator/(SignedWrapInt other) const { if(other == 0) { divByZero(); } if(other == -1) { return -(*this); } return raw / other.raw; }
 };
 
 template <typename U, typename S>
@@ -180,6 +210,15 @@ using uszw = integer_::ISizeWrappers::UnsignedWrap;
 
 namespace frstd {
 namespace integer_ {
+
+inline void divByZero() {
+#ifdef FRSTD_DEBUG
+    const char msg[] = "FATAL ERROR: Division by zero occurred\n";
+    frstd::driver::writeStderr(msg, sizeof(msg) - 1);
+    frstd::driver::abortProgram();
+#endif
+    __builtin_unreachable();
+}
 
 inline void overflow() {
 #ifdef FRSTD_DEBUG
