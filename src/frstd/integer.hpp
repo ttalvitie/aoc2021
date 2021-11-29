@@ -17,7 +17,7 @@ namespace integer_ {
 #error Only GCC is supported
 #endif
 
-void overflow() {
+inline void overflow() {
 #ifdef FRSTD_DEBUG
     abort();
 #endif
