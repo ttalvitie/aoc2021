@@ -58,13 +58,7 @@ public:
     }
 
     void resize(usz size, const T& value) {
-        if(size > capacity_) {
-            usz newCapacity = capacity_ + capacity_ / 2 + 1;
-            if(size > newCapacity) {
-                newCapacity = size;
-            }
-            enlarge_(newCapacity);
-        }
+        enlarge_(size);
 
         if(size < size_) {
             for(usz i = size; i < size_; i = i + 1) {
@@ -109,9 +103,14 @@ private:
         capacity_ = 0;
     }
 
-    void enlarge_(usz newCapacity) {
-        if(newCapacity <= capacity_) {
+    void enlarge_(usz minCapacity) {
+        if(capacity_ >= minCapacity) {
             return;
+        }
+
+        usz newCapacity = capacity_ + capacity_ / 2 + 1;
+        if(newCapacity < minCapacity) {
+            newCapacity = minCapacity;
         }
 
         T* newData = (T*)driver::allocateMemory(newCapacity * sizeof(T));
