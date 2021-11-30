@@ -41,6 +41,13 @@ struct String {
     }
 };
 
+inline boolean operator==(const String& a, const String& b) {
+    return a.bytes == b.bytes;
+}
+inline boolean operator!=(const String& a, const String& b) {
+    return a.bytes != b.bytes;
+}
+
 inline String operator+(const String& a, const String& b) {
     String ret;
     for(usz i = 0; i < a.size(); ++i) {
@@ -86,6 +93,54 @@ String integerToStringImpl(T val) {
     }
 }
 
+inline void integerParseError() {
+    const char msg[] = "FAIL: Given string cannot be parsed as an integer of given type\n";
+    frstd::driver::writeStderr(msg, sizeof(msg) - 1);
+    frstd::driver::abortProgram();
+}
+
+template <typename T>
+T uncheckedIntegerFromStringImpl(const String& str, usz start = 0) {
+    T ret = 0;
+    for(usz i = start; i < str.size(); ++i) {
+        u8 ch = str[i];
+        if(ch < '0' || ch > '9') {
+            integerParseError();
+        }
+        ret *= 10;
+        ret += (T)(ch - '0');
+    }
+    return ret;
+}
+
+template <typename T>
+T unsignedIntegerFromStringImpl(const String& str) {
+    using Wrap = typename T::UnsignedWrapInt;
+    Wrap ret = uncheckedIntegerFromStringImpl<Wrap>(str, 0);
+    if(toString(ret) != str) {
+        integerParseError();
+    }
+    return (T)ret;
+}
+
+template <typename T>
+T signedIntegerFromStringImpl(const String& str) {
+    if(str.size() == 0) {
+        integerParseError();
+    }
+    using Wrap = typename T::SignedWrapInt;
+    Wrap ret;
+    if(str[0] == '-') {
+        ret = -uncheckedIntegerFromStringImpl<Wrap>(str, 1);
+    } else {
+        ret = uncheckedIntegerFromStringImpl<Wrap>(str, 0);
+    }
+    if(toString(ret) != str) {
+        integerParseError();
+    }
+    return (T)ret;
+}
+
 }
 
 // To make ADL work, we need to implement the toString functions for integers in the integer_
@@ -114,6 +169,38 @@ inline String toString(usz val) { return string_::unsignedIntegerToStringImpl(va
 inline String toString(uszw val) { return string_::unsignedIntegerToStringImpl(val); }
 
 }
+
+template <typename T>
+struct FromString {
+    // In specializations, implement the following function:
+    static T parse(const String&) = delete;
+};
+
+template <typename T>
+T fromString(const String& str) {
+    return FromString<T>::parse(str);
+}
+
+template <> struct FromString<i8> { static i8 parse(const String& str) { return string_::signedIntegerFromStringImpl<i8>(str); } };
+template <> struct FromString<i8w> { static i8w parse(const String& str) { return string_::signedIntegerFromStringImpl<i8w>(str); } };
+template <> struct FromString<u8> { static u8 parse(const String& str) { return string_::unsignedIntegerFromStringImpl<u8>(str); } };
+template <> struct FromString<u8w> { static u8w parse(const String& str) { return string_::unsignedIntegerFromStringImpl<u8w>(str); } };
+template <> struct FromString<i16> { static i16 parse(const String& str) { return string_::signedIntegerFromStringImpl<i16>(str); } };
+template <> struct FromString<i16w> { static i16w parse(const String& str) { return string_::signedIntegerFromStringImpl<i16w>(str); } };
+template <> struct FromString<u16> { static u16 parse(const String& str) { return string_::unsignedIntegerFromStringImpl<u16>(str); } };
+template <> struct FromString<u16w> { static u16w parse(const String& str) { return string_::unsignedIntegerFromStringImpl<u16w>(str); } };
+template <> struct FromString<i32> { static i32 parse(const String& str) { return string_::signedIntegerFromStringImpl<i32>(str); } };
+template <> struct FromString<i32w> { static i32w parse(const String& str) { return string_::signedIntegerFromStringImpl<i32w>(str); } };
+template <> struct FromString<u32> { static u32 parse(const String& str) { return string_::unsignedIntegerFromStringImpl<u32>(str); } };
+template <> struct FromString<u32w> { static u32w parse(const String& str) { return string_::unsignedIntegerFromStringImpl<u32w>(str); } };
+template <> struct FromString<i64> { static i64 parse(const String& str) { return string_::signedIntegerFromStringImpl<i64>(str); } };
+template <> struct FromString<i64w> { static i64w parse(const String& str) { return string_::signedIntegerFromStringImpl<i64w>(str); } };
+template <> struct FromString<u64> { static u64 parse(const String& str) { return string_::unsignedIntegerFromStringImpl<u64>(str); } };
+template <> struct FromString<u64w> { static u64w parse(const String& str) { return string_::unsignedIntegerFromStringImpl<u64w>(str); } };
+template <> struct FromString<isz> { static isz parse(const String& str) { return string_::signedIntegerFromStringImpl<isz>(str); } };
+template <> struct FromString<iszw> { static iszw parse(const String& str) { return string_::signedIntegerFromStringImpl<iszw>(str); } };
+template <> struct FromString<usz> { static usz parse(const String& str) { return string_::unsignedIntegerFromStringImpl<usz>(str); } };
+template <> struct FromString<uszw> { static uszw parse(const String& str) { return string_::unsignedIntegerFromStringImpl<uszw>(str); } };
 
 // TODO: move
 inline void writeStdout(const String& str) {

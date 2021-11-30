@@ -150,4 +150,21 @@ private:
     usz capacity_;
 };
 
+template <typename T>
+boolean operator==(const DynArray<T>& a, const DynArray<T>& b) {
+    if(a.size() != b.size()) {
+        return false;
+    }
+    for(usz i = 0; i < a.size(); ++i) {
+        if(a[i] != b[i]) {
+            return false;
+        }
+    }
+    return true;
+}
+template <typename T>
+boolean operator!=(const DynArray<T>& a, const DynArray<T>& b) {
+    return !(a == b);
+}
+
 }
