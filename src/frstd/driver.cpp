@@ -1,4 +1,4 @@
-#include <frstd/prelude.hpp>
+#include <frstd/driver.hpp>
 
 #include <cstdio>
 #include <cstdlib>

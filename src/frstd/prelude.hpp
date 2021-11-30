@@ -1,9 +1,12 @@
 #pragma once
 
+#include <frstd/boolean.hpp>
 #include <frstd/dynarray.hpp>
 #include <frstd/integer.hpp>
 #include <frstd/memory.hpp>
 #include <frstd/meta.hpp>
+
+using frstd::boolean;
 
 using frstd::i8;
 using frstd::i8w;

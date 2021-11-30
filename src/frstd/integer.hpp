@@ -1,5 +1,7 @@
 #pragma once
 
+#include <frstd/boolean.hpp>
+
 namespace frstd {
 
 namespace integer_ {
@@ -39,12 +41,12 @@ struct UnsignedInt {
     template <typename T, typename = Void<typename IsIntWrapper<T>::Yes>>
     explicit UnsignedInt(T src) { if(__builtin_add_overflow(src.raw, 0, &raw)) { overflow(); } }
 
-    bool operator==(UnsignedInt other) const { return raw == other.raw; }
-    bool operator!=(UnsignedInt other) const { return raw != other.raw; }
-    bool operator<(UnsignedInt other) const { return raw < other.raw; }
-    bool operator>(UnsignedInt other) const { return raw > other.raw; }
-    bool operator<=(UnsignedInt other) const { return raw <= other.raw; }
-    bool operator>=(UnsignedInt other) const { return raw >= other.raw; }
+    boolean operator==(UnsignedInt other) const { return raw == other.raw; }
+    boolean operator!=(UnsignedInt other) const { return raw != other.raw; }
+    boolean operator<(UnsignedInt other) const { return raw < other.raw; }
+    boolean operator>(UnsignedInt other) const { return raw > other.raw; }
+    boolean operator<=(UnsignedInt other) const { return raw <= other.raw; }
+    boolean operator>=(UnsignedInt other) const { return raw >= other.raw; }
 
     UnsignedInt operator+(UnsignedInt other) const { UnsignedInt ret; if(__builtin_add_overflow(raw, other.raw, &ret.raw)) { overflow(); } return ret; }
     UnsignedInt operator-(UnsignedInt other) const { UnsignedInt ret; if(__builtin_sub_overflow(raw, other.raw, &ret.raw)) { overflow(); } return ret; }
@@ -78,12 +80,12 @@ struct SignedInt {
     template <typename T, typename = Void<typename IsIntWrapper<T>::Yes>>
     explicit SignedInt(T src) { if(__builtin_add_overflow(src.raw, 0, &raw)) { overflow(); } }
 
-    bool operator==(SignedInt other) const { return raw == other.raw; }
-    bool operator!=(SignedInt other) const { return raw != other.raw; }
-    bool operator<(SignedInt other) const { return raw < other.raw; }
-    bool operator>(SignedInt other) const { return raw > other.raw; }
-    bool operator<=(SignedInt other) const { return raw <= other.raw; }
-    bool operator>=(SignedInt other) const { return raw >= other.raw; }
+    boolean operator==(SignedInt other) const { return raw == other.raw; }
+    boolean operator!=(SignedInt other) const { return raw != other.raw; }
+    boolean operator<(SignedInt other) const { return raw < other.raw; }
+    boolean operator>(SignedInt other) const { return raw > other.raw; }
+    boolean operator<=(SignedInt other) const { return raw <= other.raw; }
+    boolean operator>=(SignedInt other) const { return raw >= other.raw; }
 
     SignedInt operator-() const { SignedInt ret; if(__builtin_sub_overflow((S)0, raw, &ret.raw)) { overflow(); } return ret; }
     SignedInt operator+(SignedInt other) const { SignedInt ret; if(__builtin_add_overflow(raw, other.raw, &ret.raw)) { overflow(); } return ret; }
@@ -118,12 +120,12 @@ struct UnsignedWrapInt {
     template <typename T, typename = Void<typename IsIntWrapper<T>::Yes>>
     explicit UnsignedWrapInt(T src) : raw((U)src.raw) { }
 
-    bool operator==(UnsignedWrapInt other) const { return raw == other.raw; }
-    bool operator!=(UnsignedWrapInt other) const { return raw != other.raw; }
-    bool operator<(UnsignedWrapInt other) const { return raw < other.raw; }
-    bool operator>(UnsignedWrapInt other) const { return raw > other.raw; }
-    bool operator<=(UnsignedWrapInt other) const { return raw <= other.raw; }
-    bool operator>=(UnsignedWrapInt other) const { return raw >= other.raw; }
+    boolean operator==(UnsignedWrapInt other) const { return raw == other.raw; }
+    boolean operator!=(UnsignedWrapInt other) const { return raw != other.raw; }
+    boolean operator<(UnsignedWrapInt other) const { return raw < other.raw; }
+    boolean operator>(UnsignedWrapInt other) const { return raw > other.raw; }
+    boolean operator<=(UnsignedWrapInt other) const { return raw <= other.raw; }
+    boolean operator>=(UnsignedWrapInt other) const { return raw >= other.raw; }
 
     UnsignedWrapInt operator-() const { UnsignedWrapInt ret; ret.raw = -raw; return ret; }
     UnsignedWrapInt operator+(UnsignedWrapInt other) const { UnsignedWrapInt ret; ret.raw = raw + other.raw; return ret; }
@@ -158,12 +160,12 @@ struct SignedWrapInt {
     template <typename T, typename = Void<typename IsIntWrapper<T>::Yes>>
     explicit SignedWrapInt(T src) : raw((S)src.raw) { }
 
-    bool operator==(SignedWrapInt other) const { return raw == other.raw; }
-    bool operator!=(SignedWrapInt other) const { return raw != other.raw; }
-    bool operator<(SignedWrapInt other) const { return raw < other.raw; }
-    bool operator>(SignedWrapInt other) const { return raw > other.raw; }
-    bool operator<=(SignedWrapInt other) const { return raw <= other.raw; }
-    bool operator>=(SignedWrapInt other) const { return raw >= other.raw; }
+    boolean operator==(SignedWrapInt other) const { return raw == other.raw; }
+    boolean operator!=(SignedWrapInt other) const { return raw != other.raw; }
+    boolean operator<(SignedWrapInt other) const { return raw < other.raw; }
+    boolean operator>(SignedWrapInt other) const { return raw > other.raw; }
+    boolean operator<=(SignedWrapInt other) const { return raw <= other.raw; }
+    boolean operator>=(SignedWrapInt other) const { return raw >= other.raw; }
 
     SignedWrapInt operator-() const { SignedWrapInt ret; ret.raw = (S)(-(U)raw); return ret; }
     SignedWrapInt operator+(SignedWrapInt other) const { SignedWrapInt ret; ret.raw = (S)((U)raw + (U)other.raw); return ret; }
