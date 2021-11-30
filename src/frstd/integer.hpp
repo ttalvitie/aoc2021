@@ -278,6 +278,7 @@ using ISizeWrappers = TypeChooser<true, 8 * sizeof(void*)>::Type;
 
 struct Dummy {};
 static_assert(sizeof(void*) == sizeof(Dummy*));
+static_assert(sizeof(void*) == sizeof(sizeof(int)));
 
 }
 
