@@ -79,9 +79,8 @@ String unsignedIntegerToStringImpl(T val) {
 
 template <typename T>
 String integerToStringImpl(T val) {
-    // TODO: fix
     if(val < 0) {
-        return "-" + unsignedIntegerToStringImpl(-val);
+        return "-" + unsignedIntegerToStringImpl(-(typename T::UnsignedWrapInt)val);
     } else {
         return unsignedIntegerToStringImpl(val);
     }

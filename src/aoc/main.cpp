@@ -12,4 +12,6 @@ void run() {
     for(usz i = 0; i < z.size(); ++i) {
         frstd::writeStdout(toString(z[i]) + "\n");
     }
+
+    frstd::writeStdout(toString((i8)-128) + "\n");
 }
