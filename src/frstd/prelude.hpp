@@ -35,4 +35,3 @@ using frstd::move;
 using frstd::DynArray;
 
 using frstd::String;
-using frstd::toString;

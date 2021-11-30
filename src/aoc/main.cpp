@@ -1,7 +1,5 @@
 #include <frstd/prelude.hpp>
 
-#include <cstdio>
-
 void run() {
     DynArray<usz> x;
     for(usz i = 0; i < 1000; i += 10) {
