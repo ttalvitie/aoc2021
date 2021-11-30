@@ -62,8 +62,8 @@ void unsignedIntegerToStringImplRecursion(T val, String& ret) {
 
     T rest = val / 10;
     unsignedIntegerToStringImplRecursion(rest, ret);
-    u8 last = (u8)(val - rest * 10);
-    ret.push(last + '0');
+    u8 last = (u8)(val - 10 * rest);
+    ret.push('0' + last);
 }
 
 template <typename T>

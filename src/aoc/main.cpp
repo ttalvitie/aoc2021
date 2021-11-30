@@ -2,7 +2,7 @@
 
 void run() {
     DynArray<usz> x;
-    for(usz i = 0; i < 1000; i += 10) {
+    for(usz i = 0; 1000 > i; i += 10) {
         x.push(i);
     }
     DynArray<usz> y = x;

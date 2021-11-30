@@ -213,6 +213,68 @@ struct SignedWrap {
     SignedWrap operator--(int) { SignedWrap ret = *this; --*this; return ret; }
 };
 
+template <typename T, typename = Void<typename IsIntWrapper<T>::Yes>> boolean operator==(signed int a, T b) { return (T)a == b; }
+template <typename T, typename = Void<typename IsIntWrapper<T>::Yes>> boolean operator==(unsigned int a, T b) { return (T)a == b; }
+template <typename T, typename = Void<typename IsIntWrapper<T>::Yes>> boolean operator==(signed long int a, T b) { return (T)a == b; }
+template <typename T, typename = Void<typename IsIntWrapper<T>::Yes>> boolean operator==(unsigned long int a, T b) { return (T)a == b; }
+template <typename T, typename = Void<typename IsIntWrapper<T>::Yes>> boolean operator==(signed long long int a, T b) { return (T)a == b; }
+template <typename T, typename = Void<typename IsIntWrapper<T>::Yes>> boolean operator==(unsigned long long int a, T b) { return (T)a == b; }
+template <typename T, typename = Void<typename IsIntWrapper<T>::Yes>> boolean operator!=(signed int a, T b) { return (T)a != b; }
+template <typename T, typename = Void<typename IsIntWrapper<T>::Yes>> boolean operator!=(unsigned int a, T b) { return (T)a != b; }
+template <typename T, typename = Void<typename IsIntWrapper<T>::Yes>> boolean operator!=(signed long int a, T b) { return (T)a != b; }
+template <typename T, typename = Void<typename IsIntWrapper<T>::Yes>> boolean operator!=(unsigned long int a, T b) { return (T)a != b; }
+template <typename T, typename = Void<typename IsIntWrapper<T>::Yes>> boolean operator!=(signed long long int a, T b) { return (T)a != b; }
+template <typename T, typename = Void<typename IsIntWrapper<T>::Yes>> boolean operator!=(unsigned long long int a, T b) { return (T)a != b; }
+template <typename T, typename = Void<typename IsIntWrapper<T>::Yes>> boolean operator<(signed int a, T b) { return (T)a < b; }
+template <typename T, typename = Void<typename IsIntWrapper<T>::Yes>> boolean operator<(unsigned int a, T b) { return (T)a < b; }
+template <typename T, typename = Void<typename IsIntWrapper<T>::Yes>> boolean operator<(signed long int a, T b) { return (T)a < b; }
+template <typename T, typename = Void<typename IsIntWrapper<T>::Yes>> boolean operator<(unsigned long int a, T b) { return (T)a < b; }
+template <typename T, typename = Void<typename IsIntWrapper<T>::Yes>> boolean operator<(signed long long int a, T b) { return (T)a < b; }
+template <typename T, typename = Void<typename IsIntWrapper<T>::Yes>> boolean operator<(unsigned long long int a, T b) { return (T)a < b; }
+template <typename T, typename = Void<typename IsIntWrapper<T>::Yes>> boolean operator>(signed int a, T b) { return (T)a > b; }
+template <typename T, typename = Void<typename IsIntWrapper<T>::Yes>> boolean operator>(unsigned int a, T b) { return (T)a > b; }
+template <typename T, typename = Void<typename IsIntWrapper<T>::Yes>> boolean operator>(signed long int a, T b) { return (T)a > b; }
+template <typename T, typename = Void<typename IsIntWrapper<T>::Yes>> boolean operator>(unsigned long int a, T b) { return (T)a > b; }
+template <typename T, typename = Void<typename IsIntWrapper<T>::Yes>> boolean operator>(signed long long int a, T b) { return (T)a > b; }
+template <typename T, typename = Void<typename IsIntWrapper<T>::Yes>> boolean operator>(unsigned long long int a, T b) { return (T)a > b; }
+template <typename T, typename = Void<typename IsIntWrapper<T>::Yes>> boolean operator<=(signed int a, T b) { return (T)a <= b; }
+template <typename T, typename = Void<typename IsIntWrapper<T>::Yes>> boolean operator<=(unsigned int a, T b) { return (T)a <= b; }
+template <typename T, typename = Void<typename IsIntWrapper<T>::Yes>> boolean operator<=(signed long int a, T b) { return (T)a <= b; }
+template <typename T, typename = Void<typename IsIntWrapper<T>::Yes>> boolean operator<=(unsigned long int a, T b) { return (T)a <= b; }
+template <typename T, typename = Void<typename IsIntWrapper<T>::Yes>> boolean operator<=(signed long long int a, T b) { return (T)a <= b; }
+template <typename T, typename = Void<typename IsIntWrapper<T>::Yes>> boolean operator<=(unsigned long long int a, T b) { return (T)a <= b; }
+template <typename T, typename = Void<typename IsIntWrapper<T>::Yes>> boolean operator>=(signed int a, T b) { return (T)a >= b; }
+template <typename T, typename = Void<typename IsIntWrapper<T>::Yes>> boolean operator>=(unsigned int a, T b) { return (T)a >= b; }
+template <typename T, typename = Void<typename IsIntWrapper<T>::Yes>> boolean operator>=(signed long int a, T b) { return (T)a >= b; }
+template <typename T, typename = Void<typename IsIntWrapper<T>::Yes>> boolean operator>=(unsigned long int a, T b) { return (T)a >= b; }
+template <typename T, typename = Void<typename IsIntWrapper<T>::Yes>> boolean operator>=(signed long long int a, T b) { return (T)a >= b; }
+template <typename T, typename = Void<typename IsIntWrapper<T>::Yes>> boolean operator>=(unsigned long long int a, T b) { return (T)a >= b; }
+
+template <typename T, typename = Void<typename IsIntWrapper<T>::Yes>> T operator+(signed int a, T b) { return (T)a + b; }
+template <typename T, typename = Void<typename IsIntWrapper<T>::Yes>> T operator+(unsigned int a, T b) { return (T)a + b; }
+template <typename T, typename = Void<typename IsIntWrapper<T>::Yes>> T operator+(signed long int a, T b) { return (T)a + b; }
+template <typename T, typename = Void<typename IsIntWrapper<T>::Yes>> T operator+(unsigned long int a, T b) { return (T)a + b; }
+template <typename T, typename = Void<typename IsIntWrapper<T>::Yes>> T operator+(signed long long int a, T b) { return (T)a + b; }
+template <typename T, typename = Void<typename IsIntWrapper<T>::Yes>> T operator+(unsigned long long int a, T b) { return (T)a + b; }
+template <typename T, typename = Void<typename IsIntWrapper<T>::Yes>> T operator-(signed int a, T b) { return (T)a - b; }
+template <typename T, typename = Void<typename IsIntWrapper<T>::Yes>> T operator-(unsigned int a, T b) { return (T)a - b; }
+template <typename T, typename = Void<typename IsIntWrapper<T>::Yes>> T operator-(signed long int a, T b) { return (T)a - b; }
+template <typename T, typename = Void<typename IsIntWrapper<T>::Yes>> T operator-(unsigned long int a, T b) { return (T)a - b; }
+template <typename T, typename = Void<typename IsIntWrapper<T>::Yes>> T operator-(signed long long int a, T b) { return (T)a - b; }
+template <typename T, typename = Void<typename IsIntWrapper<T>::Yes>> T operator-(unsigned long long int a, T b) { return (T)a - b; }
+template <typename T, typename = Void<typename IsIntWrapper<T>::Yes>> T operator*(signed int a, T b) { return (T)a * b; }
+template <typename T, typename = Void<typename IsIntWrapper<T>::Yes>> T operator*(unsigned int a, T b) { return (T)a * b; }
+template <typename T, typename = Void<typename IsIntWrapper<T>::Yes>> T operator*(signed long int a, T b) { return (T)a * b; }
+template <typename T, typename = Void<typename IsIntWrapper<T>::Yes>> T operator*(unsigned long int a, T b) { return (T)a * b; }
+template <typename T, typename = Void<typename IsIntWrapper<T>::Yes>> T operator*(signed long long int a, T b) { return (T)a * b; }
+template <typename T, typename = Void<typename IsIntWrapper<T>::Yes>> T operator*(unsigned long long int a, T b) { return (T)a * b; }
+template <typename T, typename = Void<typename IsIntWrapper<T>::Yes>> T operator/(signed int a, T b) { return (T)a / b; }
+template <typename T, typename = Void<typename IsIntWrapper<T>::Yes>> T operator/(unsigned int a, T b) { return (T)a / b; }
+template <typename T, typename = Void<typename IsIntWrapper<T>::Yes>> T operator/(signed long int a, T b) { return (T)a / b; }
+template <typename T, typename = Void<typename IsIntWrapper<T>::Yes>> T operator/(unsigned long int a, T b) { return (T)a / b; }
+template <typename T, typename = Void<typename IsIntWrapper<T>::Yes>> T operator/(signed long long int a, T b) { return (T)a / b; }
+template <typename T, typename = Void<typename IsIntWrapper<T>::Yes>> T operator/(unsigned long long int a, T b) { return (T)a / b; }
+
 template <typename U, typename S, bool IsSize>
 struct Wrappers {
     static_assert(sizeof(U) == sizeof(S));
