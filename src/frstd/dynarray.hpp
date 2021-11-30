@@ -2,6 +2,7 @@
 
 #include <frstd/driver.hpp>
 #include <frstd/integer.hpp>
+#include <frstd/memory.hpp>
 #include <frstd/meta.hpp>
 
 namespace frstd {
@@ -87,6 +88,13 @@ public:
             dynarray_::indexOutOfBounds();
         }
         return data_[i.raw];
+    }
+
+    T* data() {
+        return data_;
+    }
+    const T* data() const {
+        return data_;
     }
 
     void push(T elem) {

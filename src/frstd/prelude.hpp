@@ -5,6 +5,7 @@
 #include <frstd/integer.hpp>
 #include <frstd/memory.hpp>
 #include <frstd/meta.hpp>
+#include <frstd/string.hpp>
 
 using frstd::boolean;
 
@@ -32,3 +33,6 @@ using frstd::uszw;
 using frstd::move;
 
 using frstd::DynArray;
+
+using frstd::String;
+using frstd::toString;
