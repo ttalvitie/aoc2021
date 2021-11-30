@@ -25,21 +25,21 @@ struct Void {};
 template <typename T>
 struct IsIntWrapper {};
 
-template <typename U, typename S>
+template <typename U, typename S, bool IsSize>
 struct Unsigned;
-template <typename U, typename S>
+template <typename U, typename S, bool IsSize>
 struct Signed;
-template <typename U, typename S>
+template <typename U, typename S, bool IsSize>
 struct UnsignedWrap;
-template <typename U, typename S>
+template <typename U, typename S, bool IsSize>
 struct SignedWrap;
 
-template <typename U, typename S>
+template <typename U, typename S, bool IsSize>
 struct Unsigned {
-    using UnsignedInt = Unsigned<U, S>;
-    using SignedInt = Signed<U, S>;
-    using UnsignedWrapInt = UnsignedWrap<U, S>;
-    using SignedWrapInt = SignedWrap<U, S>;
+    using UnsignedInt = Unsigned<U, S, IsSize>;
+    using SignedInt = Signed<U, S, IsSize>;
+    using UnsignedWrapInt = UnsignedWrap<U, S, IsSize>;
+    using SignedWrapInt = SignedWrap<U, S, IsSize>;
 
     U raw;
 
@@ -78,12 +78,12 @@ struct Unsigned {
     Unsigned operator--(int) { Unsigned ret = *this; --*this; return ret; }
 };
 
-template <typename U, typename S>
+template <typename U, typename S, bool IsSize>
 struct Signed {
-    using UnsignedInt = Unsigned<U, S>;
-    using SignedInt = Signed<U, S>;
-    using UnsignedWrapInt = UnsignedWrap<U, S>;
-    using SignedWrapInt = SignedWrap<U, S>;
+    using UnsignedInt = Unsigned<U, S, IsSize>;
+    using SignedInt = Signed<U, S, IsSize>;
+    using UnsignedWrapInt = UnsignedWrap<U, S, IsSize>;
+    using SignedWrapInt = SignedWrap<U, S, IsSize>;
 
     S raw;
 
@@ -123,12 +123,12 @@ struct Signed {
     Signed operator--(int) { Signed ret = *this; --*this; return ret; }
 };
 
-template <typename U, typename S>
+template <typename U, typename S, bool IsSize>
 struct UnsignedWrap {
-    using UnsignedInt = Unsigned<U, S>;
-    using SignedInt = Signed<U, S>;
-    using UnsignedWrapInt = UnsignedWrap<U, S>;
-    using SignedWrapInt = SignedWrap<U, S>;
+    using UnsignedInt = Unsigned<U, S, IsSize>;
+    using SignedInt = Signed<U, S, IsSize>;
+    using UnsignedWrapInt = UnsignedWrap<U, S, IsSize>;
+    using SignedWrapInt = SignedWrap<U, S, IsSize>;
 
     U raw;
 
@@ -168,12 +168,12 @@ struct UnsignedWrap {
     UnsignedWrap operator--(int) { UnsignedWrap ret = *this; --*this; return ret; }
 };
 
-template <typename U, typename S>
+template <typename U, typename S, bool IsSize>
 struct SignedWrap {
-    using UnsignedInt = Unsigned<U, S>;
-    using SignedInt = Signed<U, S>;
-    using UnsignedWrapInt = UnsignedWrap<U, S>;
-    using SignedWrapInt = SignedWrap<U, S>;
+    using UnsignedInt = Unsigned<U, S, IsSize>;
+    using SignedInt = Signed<U, S, IsSize>;
+    using UnsignedWrapInt = UnsignedWrap<U, S, IsSize>;
+    using SignedWrapInt = SignedWrap<U, S, IsSize>;
 
     S raw;
 
@@ -213,33 +213,38 @@ struct SignedWrap {
     SignedWrap operator--(int) { SignedWrap ret = *this; --*this; return ret; }
 };
 
-template <typename U, typename S>
+template <typename U, typename S, bool IsSize>
 struct Wrappers {
     static_assert(sizeof(U) == sizeof(S));
 
     static constexpr int ByteCount = sizeof(U);
     static constexpr int BitCount = 8 * ByteCount;
 
-    using UnsignedInt = Unsigned<U, S>;
-    using SignedInt = Signed<U, S>;
-    using UnsignedWrapInt = UnsignedWrap<U, S>;
-    using SignedWrapInt = SignedWrap<U, S>;
+    using UnsignedInt = Unsigned<U, S, IsSize>;
+    using SignedInt = Signed<U, S, IsSize>;
+    using UnsignedWrapInt = UnsignedWrap<U, S, IsSize>;
+    using SignedWrapInt = SignedWrap<U, S, IsSize>;
 };
 
-template <typename U, typename S>
-struct IsIntWrapper<Unsigned<U, S>> { using Yes = int; };
-template <typename U, typename S>
-struct IsIntWrapper<Signed<U, S>> { using Yes = int; };
-template <typename U, typename S>
-struct IsIntWrapper<UnsignedWrap<U, S>> { using Yes = int; };
-template <typename U, typename S>
-struct IsIntWrapper<SignedWrap<U, S>> { using Yes = int; };
+template <typename U, typename S, bool IsSize>
+struct IsIntWrapper<Unsigned<U, S, IsSize>> { using Yes = int; };
+template <typename U, typename S, bool IsSize>
+struct IsIntWrapper<Signed<U, S, IsSize>> { using Yes = int; };
+template <typename U, typename S, bool IsSize>
+struct IsIntWrapper<UnsignedWrap<U, S, IsSize>> { using Yes = int; };
+template <typename U, typename S, bool IsSize>
+struct IsIntWrapper<SignedWrap<U, S, IsSize>> { using Yes = int; };
 
-using CharWrappers = Wrappers<unsigned char, signed char>;
-using ShortWrappers = Wrappers<unsigned short, signed short>;
-using IntWrappers = Wrappers<unsigned int, signed int>;
-using LongWrappers = Wrappers<unsigned long, signed long>;
-using LongLongWrappers = Wrappers<unsigned long long, signed long long>;
+template <bool IsSize>
+using CharWrappers = Wrappers<unsigned char, signed char, IsSize>;
+template <bool IsSize>
+using ShortWrappers = Wrappers<unsigned short, signed short, IsSize>;
+template <bool IsSize>
+using IntWrappers = Wrappers<unsigned int, signed int, IsSize>;
+template <bool IsSize>
+using LongWrappers = Wrappers<unsigned long, signed long, IsSize>;
+template <bool IsSize>
+using LongLongWrappers = Wrappers<unsigned long long, signed long long, IsSize>;
 
 template <int BitCount, typename... T>
 struct TypeChooserImpl;
@@ -262,14 +267,14 @@ struct TypeChooserImpl<BitCount, FirstT, T...> {
     using Type = typename TypeChooserHelper<FirstT::BitCount == BitCount, BitCount, FirstT, T...>::Type;
 };
 
-template <int BitCount>
-using TypeChooser = TypeChooserImpl<BitCount, CharWrappers, ShortWrappers, IntWrappers, LongWrappers, LongLongWrappers>;
+template <bool IsSize, int BitCount>
+using TypeChooser = TypeChooserImpl<BitCount, CharWrappers<IsSize>, ShortWrappers<IsSize>, IntWrappers<IsSize>, LongWrappers<IsSize>, LongLongWrappers<IsSize>>;
 
-using I8Wrappers = TypeChooser<8>::Type;
-using I16Wrappers = TypeChooser<16>::Type;
-using I32Wrappers = TypeChooser<32>::Type;
-using I64Wrappers = TypeChooser<64>::Type;
-using ISizeWrappers = TypeChooser<8 * sizeof(void*)>::Type;
+using I8Wrappers = TypeChooser<false, 8>::Type;
+using I16Wrappers = TypeChooser<false, 16>::Type;
+using I32Wrappers = TypeChooser<false, 32>::Type;
+using I64Wrappers = TypeChooser<false, 64>::Type;
+using ISizeWrappers = TypeChooser<true, 8 * sizeof(void*)>::Type;
 
 struct Dummy {};
 static_assert(sizeof(void*) == sizeof(Dummy*));

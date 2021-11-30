@@ -104,13 +104,10 @@ inline String toString(i64 val) { return string_::integerToStringImpl(val); }
 inline String toString(i64w val) { return string_::integerToStringImpl(val); }
 inline String toString(u64 val) { return string_::unsignedIntegerToStringImpl(val); }
 inline String toString(u64w val) { return string_::unsignedIntegerToStringImpl(val); }
-/*
-TODO: fix
 inline String toString(isz val) { return string_::integerToStringImpl(val); }
 inline String toString(iszw val) { return string_::integerToStringImpl(val); }
 inline String toString(usz val) { return string_::unsignedIntegerToStringImpl(val); }
 inline String toString(uszw val) { return string_::unsignedIntegerToStringImpl(val); }
-*/
 
 // TODO: move
 inline void writeStdout(const String& str) {
