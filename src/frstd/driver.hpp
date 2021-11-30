@@ -1,4 +1,8 @@
-#include "integer.hpp"
+#include <frstd/integer.hpp>
+
+// Cannot use #pragma once guard due to cyclic depedendency with frstd/integer.hpp.
+#ifndef FRSTD_DRIVER_HPP
+#define FRSTD_DRIVER_HPP
 
 namespace frstd {
 namespace driver {
@@ -12,3 +16,5 @@ void* allocateMemory(const usz size);
 
 }
 }
+
+#endif

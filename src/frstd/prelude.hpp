@@ -1,6 +1,9 @@
 #pragma once
 
+#include <frstd/dynarray.hpp>
 #include <frstd/integer.hpp>
+#include <frstd/memory.hpp>
+#include <frstd/meta.hpp>
 
 using frstd::i8;
 using frstd::i8w;
@@ -22,3 +25,7 @@ using frstd::isz;
 using frstd::iszw;
 using frstd::usz;
 using frstd::uszw;
+
+using frstd::move;
+
+using frstd::DynArray;
