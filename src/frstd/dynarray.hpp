@@ -61,11 +61,11 @@ public:
         enlarge_(size);
 
         if(size < size_) {
-            for(usz i = size; i < size_; i = i + 1) {
+            for(usz i = size; i < size_; ++i) {
                 data_[i.raw].~T();
             }
         } else {
-            for(usz i = size_; i < size; i = i + 1) {
+            for(usz i = size_; i < size; ++i) {
                 new(&data_[i.raw]) T(value);
             }
         }
@@ -114,7 +114,7 @@ private:
         }
 
         T* newData = (T*)driver::allocateMemory(newCapacity * sizeof(T));
-        for(usz i = 0; i < size_; i = i + 1) {
+        for(usz i = 0; i < size_; ++i) {
             new(&newData[i.raw]) T(move(data_[i.raw]));
             data_[i.raw].~T();
         }
@@ -132,7 +132,7 @@ private:
         capacity_ = src.size_;
 
         data_ = (T*)driver::allocateMemory(size_ * sizeof(T));
-        for(usz i = 0; i < size_; i = i + 1) {
+        for(usz i = 0; i < size_; ++i) {
             new(&data_[i.raw]) T(src.data_[i.raw]);
         }
     }

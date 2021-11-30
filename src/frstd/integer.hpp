@@ -50,6 +50,16 @@ struct UnsignedInt {
     UnsignedInt operator-(UnsignedInt other) const { UnsignedInt ret; if(__builtin_sub_overflow(raw, other.raw, &ret.raw)) { overflow(); } return ret; }
     UnsignedInt operator*(UnsignedInt other) const { UnsignedInt ret; if(__builtin_mul_overflow(raw, other.raw, &ret.raw)) { overflow(); } return ret; }
     UnsignedInt operator/(UnsignedInt other) const { if(other == 0) { divByZero(); } UnsignedInt ret; ret.raw = raw / other.raw; return ret; }
+
+    UnsignedInt& operator+=(UnsignedInt other) { *this = *this + other; return *this; }
+    UnsignedInt& operator-=(UnsignedInt other) { *this = *this - other; return *this; }
+    UnsignedInt& operator*=(UnsignedInt other) { *this = *this * other; return *this; }
+    UnsignedInt& operator/=(UnsignedInt other) { *this = *this / other; return *this; }
+
+    UnsignedInt& operator++() { return *this += 1; }
+    UnsignedInt& operator--() { return *this -= 1; }
+    UnsignedInt operator++(int) { UnsignedInt ret = *this; ++*this; return ret; }
+    UnsignedInt operator--(int) { UnsignedInt ret = *this; --*this; return ret; }
 };
 
 template <typename U, typename S>
@@ -80,6 +90,16 @@ struct SignedInt {
     SignedInt operator-(SignedInt other) const { SignedInt ret; if(__builtin_sub_overflow(raw, other.raw, &ret.raw)) { overflow(); } return ret; }
     SignedInt operator*(SignedInt other) const { SignedInt ret; if(__builtin_mul_overflow(raw, other.raw, &ret.raw)) { overflow(); } return ret; }
     SignedInt operator/(SignedInt other) const { if(other == 0) { divByZero(); } if(other == -1) { return -(*this); } SignedInt ret; ret.raw = raw / other.raw; return ret; }
+
+    SignedInt& operator+=(SignedInt other) { *this = *this + other; return *this; }
+    SignedInt& operator-=(SignedInt other) { *this = *this - other; return *this; }
+    SignedInt& operator*=(SignedInt other) { *this = *this * other; return *this; }
+    SignedInt& operator/=(SignedInt other) { *this = *this / other; return *this; }
+
+    SignedInt& operator++() { return *this += 1; }
+    SignedInt& operator--() { return *this -= 1; }
+    SignedInt operator++(int) { SignedInt ret = *this; ++*this; return ret; }
+    SignedInt operator--(int) { SignedInt ret = *this; --*this; return ret; }
 };
 
 template <typename U, typename S>
@@ -110,6 +130,16 @@ struct UnsignedWrapInt {
     UnsignedWrapInt operator-(UnsignedWrapInt other) const { UnsignedWrapInt ret; ret.raw = raw - other.raw; return ret; }
     UnsignedWrapInt operator*(UnsignedWrapInt other) const { UnsignedWrapInt ret; ret.raw = raw * other.raw; return ret; }
     UnsignedWrapInt operator/(UnsignedWrapInt other) const { if(other == 0) { divByZero(); } UnsignedWrapInt ret; ret.raw = raw / other.raw; return ret; }
+
+    UnsignedWrapInt& operator+=(UnsignedWrapInt other) { *this = *this + other; return *this; }
+    UnsignedWrapInt& operator-=(UnsignedWrapInt other) { *this = *this - other; return *this; }
+    UnsignedWrapInt& operator*=(UnsignedWrapInt other) { *this = *this * other; return *this; }
+    UnsignedWrapInt& operator/=(UnsignedWrapInt other) { *this = *this / other; return *this; }
+
+    UnsignedWrapInt& operator++() { return *this += 1; }
+    UnsignedWrapInt& operator--() { return *this -= 1; }
+    UnsignedWrapInt operator++(int) { UnsignedWrapInt ret = *this; ++*this; return ret; }
+    UnsignedWrapInt operator--(int) { UnsignedWrapInt ret = *this; --*this; return ret; }
 };
 
 template <typename U, typename S>
@@ -140,6 +170,16 @@ struct SignedWrapInt {
     SignedWrapInt operator-(SignedWrapInt other) const { SignedWrapInt ret; ret.raw = (S)((U)raw - (U)other.raw); return ret; }
     SignedWrapInt operator*(SignedWrapInt other) const { SignedWrapInt ret; ret.raw = (S)((U)raw * (U)other.raw); return ret; }
     SignedWrapInt operator/(SignedWrapInt other) const { if(other == 0) { divByZero(); } if(other == -1) { return -(*this); } SignedWrapInt ret; ret.raw = raw / other.raw; return ret; }
+
+    SignedWrapInt& operator+=(SignedWrapInt other) { *this = *this + other; return *this; }
+    SignedWrapInt& operator-=(SignedWrapInt other) { *this = *this - other; return *this; }
+    SignedWrapInt& operator*=(SignedWrapInt other) { *this = *this * other; return *this; }
+    SignedWrapInt& operator/=(SignedWrapInt other) { *this = *this / other; return *this; }
+
+    SignedWrapInt& operator++() { return *this += 1; }
+    SignedWrapInt& operator--() { return *this -= 1; }
+    SignedWrapInt operator++(int) { SignedWrapInt ret = *this; ++*this; return ret; }
+    SignedWrapInt operator--(int) { SignedWrapInt ret = *this; --*this; return ret; }
 };
 
 template <typename U, typename S>
