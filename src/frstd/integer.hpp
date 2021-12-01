@@ -1,6 +1,8 @@
 #pragma once
 
+#include <frstd/baseutil.hpp>
 #include <frstd/boolean.hpp>
+#include <frstd/driver.hpp>
 
 namespace frstd {
 
@@ -16,8 +18,19 @@ namespace integer_ {
 #error Only GCC is supported
 #endif
 
-inline void divByZero();
-inline void overflow();
+inline void divByZero() {
+#ifdef FRSTD_DEBUG
+    baseutil::fail("FAIL: Division by zero occurred\n");
+#endif
+    __builtin_unreachable();
+}
+
+inline void overflow() {
+#ifdef FRSTD_DEBUG
+    baseutil::fail("FAIL: Integer overflow occurred\n");
+#endif
+    __builtin_unreachable();
+}
 
 template <typename...>
 struct Void {};
@@ -365,30 +378,4 @@ using iszw = integer_::ISizeWrappers::SignedWrapInt;
 using usz = integer_::ISizeWrappers::UnsignedInt;
 using uszw = integer_::ISizeWrappers::UnsignedWrapInt;
 
-}
-
-#include "driver.hpp"
-
-namespace frstd {
-namespace integer_ {
-
-inline void divByZero() {
-#ifdef FRSTD_DEBUG
-    const char msg[] = "FAIL: Division by zero occurred\n";
-    frstd::driver::writeStderr(msg, sizeof(msg) - 1);
-    frstd::driver::abortProgram();
-#endif
-    __builtin_unreachable();
-}
-
-inline void overflow() {
-#ifdef FRSTD_DEBUG
-    const char msg[] = "FAIL: Integer overflow occurred\n";
-    frstd::driver::writeStderr(msg, sizeof(msg) - 1);
-    frstd::driver::abortProgram();
-#endif
-    __builtin_unreachable();
-}
-
-}
 }

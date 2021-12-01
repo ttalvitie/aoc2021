@@ -1,5 +1,6 @@
 #pragma once
 
+#include <frstd/baseutil.hpp>
 #include <frstd/driver.hpp>
 #include <frstd/integer.hpp>
 #include <frstd/memory.hpp>
@@ -11,9 +12,7 @@ namespace dynarray_ {
 
 inline void indexOutOfBounds() {
 #ifdef FRSTD_DEBUG
-    const char msg[] = "FAIL: Array index out of bounds\n";
-    frstd::driver::writeStderr(msg, sizeof(msg) - 1);
-    frstd::driver::abortProgram();
+    baseutil::fail("FAIL: Array index out of bounds\n");
 #endif
     __builtin_unreachable();
 }
@@ -122,7 +121,7 @@ private:
             newCapacity = minCapacity;
         }
 
-        T* newData = (T*)driver::allocateMemory(newCapacity * sizeof(T));
+        T* newData = (T*)driver::allocateMemory((newCapacity * sizeof(T)).raw);
         for(usz i = 0; i < size_; ++i) {
             new(&newData[i.raw]) T(move(data_[i.raw]));
             data_[i.raw].~T();
@@ -140,7 +139,7 @@ private:
         size_ = src.size_;
         capacity_ = src.size_;
 
-        data_ = (T*)driver::allocateMemory(size_ * sizeof(T));
+        data_ = (T*)driver::allocateMemory((size_ * sizeof(T)).raw);
         for(usz i = 0; i < size_; ++i) {
             new(&data_[i.raw]) T(src.data_[i.raw]);
         }

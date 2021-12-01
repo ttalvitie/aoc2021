@@ -1,4 +1,6 @@
 #include <frstd/driver.hpp>
+
+#include <frstd/baseutil.hpp>
 #include <frstd/dynarray.hpp>
 #include <frstd/string.hpp>
 
@@ -14,39 +16,36 @@ void abortProgram() {
     __builtin_unreachable();
 }
 
-void writeStdout(const char* data, const usz size) {
-    if(fwrite(data, 1, size.raw, stdout) != (size_t)size.raw) {
+void writeStdout(const unsigned char* data, Size size) {
+    if(fwrite(data, 1, size, stdout) != size) {
         abortProgram();
     }
 }
-void writeStderr(const char* data, const usz size) {
-    if(fwrite(data, 1, size.raw, stderr) != (size_t)size.raw) {
+void writeStderr(const unsigned char* data, Size size) {
+    if(fwrite(data, 1, size, stderr) != size) {
         abortProgram();
     }
 }
 
-String readStdin() {
-    String ret;
-    while(true) {
+Size readStdin(unsigned char* buf, Size size) {
+    Size ret = 0;
+    while(ret < size) {
         int c = getchar();
         if(c == EOF) {
             break;
         }
-        ret.push((u8)(u8w)c);
+        buf[ret++] = (unsigned char)c;
     }
     return ret;
 }
 
-void* allocateMemory(const usz size) {
-    size_t sizeRaw = size.raw;
-    if(sizeRaw == 0) {
-        sizeRaw = 1;
+void* allocateMemory(Size size) {
+    if(size == 0) {
+        size = 1;
     }
-    void* ret = malloc(sizeRaw);
+    void* ret = malloc(size);
     if(ret == nullptr) {
-        const char* msg = "FAIL: Memory allocation failed";
-        writeStderr(msg, strlen(msg));
-        abortProgram();
+        frstd::baseutil::fail("FAIL: Memory allocation failed");
     }
     return ret;
 }

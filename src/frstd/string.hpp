@@ -1,5 +1,6 @@
 #pragma once
 
+#include <frstd/baseutil.hpp>
 #include <frstd/driver.hpp>
 #include <frstd/dynarray.hpp>
 #include <frstd/meta.hpp>
@@ -94,9 +95,7 @@ String integerToStringImpl(T val) {
 }
 
 inline void integerParseError() {
-    const char msg[] = "FAIL: Given string cannot be parsed as an integer of given type\n";
-    frstd::driver::writeStderr(msg, sizeof(msg) - 1);
-    frstd::driver::abortProgram();
+    baseutil::fail("FAIL: Given string cannot be parsed as an integer of given type\n");
 }
 
 template <typename T>
@@ -241,13 +240,24 @@ inline DynArray<String> split(String str, u8 sep) {
 
 // TODO: move
 inline void writeStdout(const String& str) {
-    frstd::driver::writeStdout((const char*)str.data(), str.size());
+    driver::writeStdout((const unsigned char*)str.data(), str.size().raw);
 }
 inline void writeStderr(const String& str) {
-    frstd::driver::writeStdout((const char*)str.data(), str.size());
+    driver::writeStdout((const unsigned char*)str.data(), str.size().raw);
 }
 inline String readStdin() {
-    return frstd::driver::readStdin();
+    String ret;
+    u8 buf[40];
+    while(true) {
+        driver::Size count = driver::readStdin((unsigned char*)buf, 40);
+        if(!count) {
+            break;
+        }
+        for(driver::Size i = 0; i < count; ++i) {
+            ret.push(buf[i]);
+        }
+    }
+    return ret;
 }
 
 }
