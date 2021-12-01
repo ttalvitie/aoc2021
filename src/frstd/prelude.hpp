@@ -36,3 +36,7 @@ using frstd::DynArray;
 
 using frstd::String;
 using frstd::fromString;
+
+using frstd::writeStdout;
+using frstd::writeStderr;
+using frstd::readStdin;

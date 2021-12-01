@@ -202,12 +202,52 @@ template <> struct FromString<iszw> { static iszw parse(const String& str) { ret
 template <> struct FromString<usz> { static usz parse(const String& str) { return string_::unsignedIntegerFromStringImpl<usz>(str); } };
 template <> struct FromString<uszw> { static uszw parse(const String& str) { return string_::unsignedIntegerFromStringImpl<uszw>(str); } };
 
+inline boolean isWhitespace(u8 byte) {
+    return (byte >= 9 && byte <= 13) || (byte >= 28 && byte <= 32);
+}
+
+inline String strip(String str) {
+    usz start = 0;
+    usz end = str.size();
+    while(start < end && isWhitespace(str[start])) {
+        ++start;
+    }
+    while(start < end && isWhitespace(str[end - 1])) {
+        --end;
+    }
+    String ret;
+    for(usz i = start; i < end; ++i) {
+        ret.push(str[i]);
+    }
+    return ret;
+}
+
+inline DynArray<String> split(String str, u8 sep) {
+    DynArray<String> ret;
+    String acc;
+    usz pos = 0;
+    while(pos < str.size()) {
+        u8 byte = str[pos++];
+        if(byte == sep) {
+            ret.push(move(acc));
+            acc = "";
+        } else {
+            acc.push(byte);
+        }
+    }
+    ret.push(move(acc));
+    return ret;
+}
+
 // TODO: move
 inline void writeStdout(const String& str) {
     frstd::driver::writeStdout((const char*)str.data(), str.size());
 }
 inline void writeStderr(const String& str) {
     frstd::driver::writeStdout((const char*)str.data(), str.size());
+}
+inline String readStdin() {
+    return frstd::driver::readStdin();
 }
 
 }

@@ -1,4 +1,6 @@
 #include <frstd/driver.hpp>
+#include <frstd/dynarray.hpp>
+#include <frstd/string.hpp>
 
 #include <cstdio>
 #include <cstdlib>
@@ -23,6 +25,18 @@ void writeStderr(const char* data, const usz size) {
     }
 }
 
+String readStdin() {
+    String ret;
+    while(true) {
+        int c = getchar();
+        if(c == EOF) {
+            break;
+        }
+        ret.push((u8)(u8w)c);
+    }
+    return ret;
+}
+
 void* allocateMemory(const usz size) {
     size_t sizeRaw = size.raw;
     if(sizeRaw == 0) {
@@ -41,9 +55,13 @@ void* allocateMemory(const usz size) {
 }
 
 // Entry point defined by program.
-void run();
+void run(frstd::DynArray<frstd::String> args);
 
 int main(int argc, char* argv[]) {
-    run();
+    frstd::DynArray<frstd::String> args;
+    for(int i = 1; i < argc; ++i) {
+        args.push(argv[i]);
+    }
+    run(move(args));
     return 0;
 }

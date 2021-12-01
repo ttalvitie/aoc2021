@@ -52,6 +52,7 @@ public:
         src.data_ = nullptr;
         src.size_ = 0;
         src.capacity_ = 0;
+        return *this;
     }
 
     ~DynArray() {
