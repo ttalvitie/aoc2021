@@ -3,7 +3,7 @@
 set -e
 set -o pipefail
 
-for i in {1..1}
+for i in {1..2}
 do
     echo "--- Day $i debug"
     ./aoc2021.debug $i < data/input$i.txt | diff - data/output$i.txt
