@@ -7,7 +7,7 @@ void run1(String input) {
 
     i32 increaseCount = 0;
     i32 prev;
-    for(usz i = 0; i < inputList.size(); ++i) {
+    for(usz i = 0; i < len(inputList); ++i) {
         i32 x = fromString<i32>(strip(inputList[i]));
         if(i != 0 && x > prev) {
             ++increaseCount;
@@ -19,7 +19,7 @@ void run1(String input) {
 
     i32 sumIncreaseCount = 0;
     i32 prevSum;
-    for(usz i = 0; i < inputList.size() - 2; ++i) {
+    for(usz i = 0; i < len(inputList) - 2; ++i) {
         i32 sum = 0;
         for(usz j = 0; j < 3; ++j) {
             sum += fromString<i32>(strip(inputList[i + j]));
@@ -38,7 +38,7 @@ void run2(String input) {
 
     i32 x = 0;
     i32 y = 0;
-    for(usz lineIdx = 0; lineIdx < lines.size(); ++lineIdx) {
+    for(usz lineIdx = 0; lineIdx < len(lines); ++lineIdx) {
         DynArray<String> line = split(strip(lines[lineIdx]), ' ');
         String cmd = strip(line[0]);
         i32 amount = fromString<i32>(strip(line[1]));
@@ -52,7 +52,7 @@ void run2(String input) {
     x = 0;
     y = 0;
     i32 aim = 0;
-    for(usz lineIdx = 0; lineIdx < lines.size(); ++lineIdx) {
+    for(usz lineIdx = 0; lineIdx < len(lines); ++lineIdx) {
         DynArray<String> line = split(strip(lines[lineIdx]), ' ');
         String cmd = strip(line[0]);
         i32 amount = fromString<i32>(strip(line[1]));
@@ -68,10 +68,10 @@ void run2(String input) {
 }
 
 u32 rec(DynArray<String> lines, usz i, usz k, boolean oxy) { 
-    if(lines.size() == 0) {
+    if(len(lines) == 0) {
         frstd::baseutil::fail("FAIL");
     }
-    if(lines.size() == 1) {
+    if(len(lines) == 1) {
         u32 ret = 0;
         for(usz j = 0; j < k; ++j) {
             ret *= 2;
@@ -85,19 +85,19 @@ u32 rec(DynArray<String> lines, usz i, usz k, boolean oxy) {
         frstd::baseutil::fail("FAIL2");
     }
     usz count = 0;
-    for(usz lineIdx = 0; lineIdx < lines.size(); ++lineIdx) {
+    for(usz lineIdx = 0; lineIdx < len(lines); ++lineIdx) {
         if(lines[lineIdx][i] == '1') {
             ++count;
         }
     }
     u8 keep;
-    if((2 * count >= lines.size()) == oxy) {
+    if((2 * count >= len(lines)) == oxy) {
         keep = '1';
     } else {
         keep = '0';
     }
     DynArray<String> newLines;
-    for(usz lineIdx = 0; lineIdx < lines.size(); ++lineIdx) {
+    for(usz lineIdx = 0; lineIdx < len(lines); ++lineIdx) {
         if(lines[lineIdx][i] == keep) {
             newLines.push(lines[lineIdx]);
         }
@@ -108,17 +108,17 @@ u32 rec(DynArray<String> lines, usz i, usz k, boolean oxy) {
 void run3(String input) {
     DynArray<String> lines = split(strip(input), '\n'); 
     usz k;
-    for(usz lineIdx = 0; lineIdx < lines.size(); ++lineIdx) {
+    for(usz lineIdx = 0; lineIdx < len(lines); ++lineIdx) {
         if(lineIdx == 0) {
-            k = lines[lineIdx].size();
+            k = len(lines[lineIdx]);
         } else {
-            if(k != lines[lineIdx].size()) {
+            if(k != len(lines[lineIdx])) {
                 frstd::baseutil::fail("FAIL");
             }
         }
     }
     DynArray<usz> counts(k, 0);
-    for(usz lineIdx = 0; lineIdx < lines.size(); ++lineIdx) {
+    for(usz lineIdx = 0; lineIdx < len(lines); ++lineIdx) {
         const String& line = lines[lineIdx];
         for(usz i = 0; i < k; ++i) {
             if(line[i] == '1') {
@@ -132,7 +132,7 @@ void run3(String input) {
     for(usz i = 0; i < k; ++i) {
         a *= 2;
         b *= 2;
-        if(counts[i] > lines.size() / 2) {
+        if(counts[i] > len(lines) / 2) {
             ++a;
         } else {
             ++b;
@@ -143,7 +143,7 @@ void run3(String input) {
 }
 
 void run(DynArray<String> args) {
-    if(args.size() != 1) {
+    if(len(args) != 1) {
         writeStderr("Usage: aoc2021 <day#>\n");
         return;
     }

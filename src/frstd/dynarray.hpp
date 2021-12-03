@@ -22,9 +22,9 @@ inline void indexOutOfBounds() {
 template <typename T>
 class DynArray {
 public:
-    DynArray() : data_(nullptr), size_(0), capacity_(0) {}
-    DynArray(usz size, const T& value) : DynArray() {
-        resize(size, value);
+    DynArray() : data_(nullptr), len_(0), capacity_(0) {}
+    DynArray(usz len, const T& value) : DynArray() {
+        resize(len, value);
     }
 
     DynArray(const DynArray& src) : DynArray() {
@@ -32,10 +32,10 @@ public:
     }
     DynArray(DynArray&& src) {
         data_ = src.data_;
-        size_ = src.size_;
+        len_ = src.len_;
         capacity_ = src.capacity_;
         src.data_ = nullptr;
-        src.size_ = 0;
+        src.len_ = 0;
         src.capacity_ = 0;
     }
     DynArray& operator=(const DynArray& src) {
@@ -46,10 +46,10 @@ public:
     DynArray& operator=(DynArray&& src) {
         reset_();
         data_ = src.data_;
-        size_ = src.size_;
+        len_ = src.len_;
         capacity_ = src.capacity_;
         src.data_ = nullptr;
-        src.size_ = 0;
+        src.len_ = 0;
         src.capacity_ = 0;
         return *this;
     }
@@ -58,33 +58,29 @@ public:
         reset_();
     }
 
-    void resize(usz size, const T& value) {
-        enlarge_(size);
+    void resize(usz len, const T& value) {
+        enlarge_(len);
 
-        if(size < size_) {
-            for(usz i = size; i < size_; ++i) {
+        if(len < len_) {
+            for(usz i = len; i < len_; ++i) {
                 data_[i.raw].~T();
             }
         } else {
-            for(usz i = size_; i < size; ++i) {
+            for(usz i = len_; i < len; ++i) {
                 new(&data_[i.raw]) T(value);
             }
         }
-        size_ = size;
-    }
-
-    usz size() const {
-        return size_;
+        len_ = len;
     }
 
     T& operator[](usz i) {
-        if(i >= size_) {
+        if(i >= len_) {
             dynarray_::indexOutOfBounds();
         }
         return data_[i.raw];
     }
     const T& operator[](usz i) const {
-        if(i >= size_) {
+        if(i >= len_) {
             dynarray_::indexOutOfBounds();
         }
         return data_[i.raw];
@@ -98,16 +94,16 @@ public:
     }
 
     void push(T elem) {
-        enlarge_(size_ + 1);
-        new(&data_[size_.raw]) T(move(elem));
-        size_ = size_ + 1;
+        enlarge_(len_ + 1);
+        new(&data_[len_.raw]) T(move(elem));
+        len_ = len_ + 1;
     }
 
 private:
     void reset_() {
         // TODO: free
         data_ = nullptr;
-        size_ = 0;
+        len_ = 0;
         capacity_ = 0;
     }
 
@@ -122,7 +118,7 @@ private:
         }
 
         T* newData = (T*)driver::allocateMemory((newCapacity * sizeof(T)).raw);
-        for(usz i = 0; i < size_; ++i) {
+        for(usz i = 0; i < len_; ++i) {
             new(&newData[i.raw]) T(move(data_[i.raw]));
             data_[i.raw].~T();
         }
@@ -132,30 +128,38 @@ private:
     }
 
     void populateFrom_(const DynArray& src) {
-        if(src.size_ == 0) {
+        if(src.len_ == 0) {
             return;
         }
 
-        size_ = src.size_;
-        capacity_ = src.size_;
+        len_ = src.len_;
+        capacity_ = src.len_;
 
-        data_ = (T*)driver::allocateMemory((size_ * sizeof(T)).raw);
-        for(usz i = 0; i < size_; ++i) {
+        data_ = (T*)driver::allocateMemory((len_ * sizeof(T)).raw);
+        for(usz i = 0; i < len_; ++i) {
             new(&data_[i.raw]) T(src.data_[i.raw]);
         }
     }
 
     T* data_;
-    usz size_;
+    usz len_;
     usz capacity_;
+
+    template <typename T2>
+    friend usz len(const DynArray<T2>& arr);
 };
 
 template <typename T>
+usz len(const DynArray<T>& arr) {
+    return arr.len_;
+}
+
+template <typename T>
 boolean operator==(const DynArray<T>& a, const DynArray<T>& b) {
-    if(a.size() != b.size()) {
+    if(len(a) != len(b)) {
         return false;
     }
-    for(usz i = 0; i < a.size(); ++i) {
+    for(usz i = 0; i < len(a); ++i) {
         if(a[i] != b[i]) {
             return false;
         }

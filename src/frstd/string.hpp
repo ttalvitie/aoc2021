@@ -19,10 +19,6 @@ struct String {
 
     explicit String(DynArray<u8> src) : bytes(move(src)) {}
 
-    usz size() const {
-        return bytes.size();
-    }
-
     u8& operator[](usz i) {
         return bytes[i];
     }
@@ -42,6 +38,10 @@ struct String {
     }
 };
 
+inline usz len(const String& str) {
+    return len(str.bytes);
+}
+
 inline boolean operator==(const String& a, const String& b) {
     return a.bytes == b.bytes;
 }
@@ -51,10 +51,10 @@ inline boolean operator!=(const String& a, const String& b) {
 
 inline String operator+(const String& a, const String& b) {
     String ret;
-    for(usz i = 0; i < a.size(); ++i) {
+    for(usz i = 0; i < len(a); ++i) {
         ret.push(a[i]);
     }
-    for(usz i = 0; i < b.size(); ++i) {
+    for(usz i = 0; i < len(b); ++i) {
         ret.push(b[i]);
     }
     return ret;
@@ -101,7 +101,7 @@ inline void integerParseError() {
 template <typename T>
 T uncheckedIntegerFromStringImpl(const String& str, usz start = 0) {
     T ret = 0;
-    for(usz i = start; i < str.size(); ++i) {
+    for(usz i = start; i < len(str); ++i) {
         u8 ch = str[i];
         if(ch < '0' || ch > '9') {
             integerParseError();
@@ -124,7 +124,7 @@ T unsignedIntegerFromStringImpl(const String& str) {
 
 template <typename T>
 T signedIntegerFromStringImpl(const String& str) {
-    if(str.size() == 0) {
+    if(len(str) == 0) {
         integerParseError();
     }
     using Wrap = typename T::SignedWrapInt;
@@ -207,7 +207,7 @@ inline boolean isWhitespace(u8 byte) {
 
 inline String strip(String str) {
     usz start = 0;
-    usz end = str.size();
+    usz end = len(str);
     while(start < end && isWhitespace(str[start])) {
         ++start;
     }
@@ -225,7 +225,7 @@ inline DynArray<String> split(String str, u8 sep) {
     DynArray<String> ret;
     String acc;
     usz pos = 0;
-    while(pos < str.size()) {
+    while(pos < len(str)) {
         u8 byte = str[pos++];
         if(byte == sep) {
             ret.push(move(acc));
@@ -240,10 +240,10 @@ inline DynArray<String> split(String str, u8 sep) {
 
 // TODO: move
 inline void writeStdout(const String& str) {
-    driver::writeStdout((const unsigned char*)str.data(), str.size().raw);
+    driver::writeStdout((const unsigned char*)str.data(), len(str).raw);
 }
 inline void writeStderr(const String& str) {
-    driver::writeStdout((const unsigned char*)str.data(), str.size().raw);
+    driver::writeStdout((const unsigned char*)str.data(), len(str).raw);
 }
 inline String readStdin() {
     String ret;
