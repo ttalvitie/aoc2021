@@ -1,5 +1,7 @@
 #include <frstd/prelude.hpp>
 
+#include <frstd/baseutil.hpp>
+
 void run1(String input) {
     DynArray<String> inputList = split(strip(input), '\n');
 
@@ -65,6 +67,92 @@ void run2(String input) {
     writeStdout(toString(x * y) + "\n");
 }
 
+u32 rec(DynArray<String> lines, usz i, usz k, boolean oxy) { 
+    if(lines.size() == 0) {
+        frstd::baseutil::fail("FAIL");
+    }
+    if(lines.size() == 1) {
+        u32 ret = 0;
+        for(usz j = 0; j < k; ++j) {
+            ret *= 2;
+            if(lines[0][j] == '1') {
+                ++ret;
+            }
+        }
+        return ret;
+    }
+    if(i >= k) {
+        frstd::baseutil::fail("FAIL2");
+    }
+    usz count = 0;
+    for(usz lineIdx = 0; lineIdx < lines.size(); ++lineIdx) {
+        if(lines[lineIdx][i] == '1') {
+            ++count;
+        }
+    }
+    u8 keep;
+    if(oxy) {
+        if(2 * count >= lines.size()) {
+            keep = '1';
+        } else {
+            keep = '0';
+        }
+    } else {
+        if(2 * count < lines.size()) {
+            keep = '1';
+        } else {
+            keep = '0';
+        }
+    }
+    DynArray<String> newLines;
+    for(usz lineIdx = 0; lineIdx < lines.size(); ++lineIdx) {
+        if(lines[lineIdx][i] == keep) {
+            newLines.push(lines[lineIdx]);
+        }
+    }
+    return rec(newLines, i + 1, k, oxy);
+}
+
+void run3(String input) {
+    DynArray<String> lines = split(strip(input), '\n'); 
+    usz k;
+    for(usz lineIdx = 0; lineIdx < lines.size(); ++lineIdx) {
+        if(lineIdx == 0) {
+            k = lines[lineIdx].size();
+        } else {
+            if(k != lines[lineIdx].size()) {
+                frstd::baseutil::fail("FAIL");
+            }
+        }
+    }
+    DynArray<usz> counts(k, 0);
+    for(usz lineIdx = 0; lineIdx < lines.size(); ++lineIdx) {
+        const String& line = lines[lineIdx];
+        for(usz i = 0; i < k; ++i) {
+            if(line[i] == '1') {
+                ++counts[i];
+            }
+        }
+    }
+
+    boolean oxyOne;
+    u32 a = 0;
+    u32 b = 0;
+    for(usz i = 0; i < k; ++i) {
+        a *= 2;
+        b *= 2;
+        if(counts[i] > lines.size() / 2) {
+            ++a;
+            oxyOne = true;
+        } else {
+            ++b;
+            oxyOne = false;
+        }
+    }
+    writeStdout(toString(a * b) + "\n");
+    writeStdout(toString(rec(lines, 0, k, true) * rec(lines, 0, k, false)) + "\n");
+}
+
 void run(DynArray<String> args) {
     if(args.size() != 1) {
         writeStderr("Usage: aoc2021 <day#>\n");
@@ -77,6 +165,9 @@ void run(DynArray<String> args) {
     } else if(day == "2") {
         String input = readStdin();
         run2(move(input));
+    } else if(day == "3") {
+        String input = readStdin();
+        run3(move(input));
     } else {
         writeStderr("Unknown day\n");
     }
