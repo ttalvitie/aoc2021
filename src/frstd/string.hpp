@@ -2,7 +2,7 @@
 
 #include <frstd/baseutil.hpp>
 #include <frstd/driver.hpp>
-#include <frstd/dynarray.hpp>
+#include <frstd/array.hpp>
 #include <frstd/meta.hpp>
 
 namespace frstd {

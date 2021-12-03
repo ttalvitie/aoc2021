@@ -1,7 +1,7 @@
 #pragma once
 
 #include <frstd/boolean.hpp>
-#include <frstd/dynarray.hpp>
+#include <frstd/array.hpp>
 #include <frstd/integer.hpp>
 #include <frstd/memory.hpp>
 #include <frstd/meta.hpp>

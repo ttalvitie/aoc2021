@@ -1,7 +1,7 @@
 #include <frstd/driver.hpp>
 
 #include <frstd/baseutil.hpp>
-#include <frstd/dynarray.hpp>
+#include <frstd/array.hpp>
 #include <frstd/string.hpp>
 
 #include <cstdio>
