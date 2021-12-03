@@ -127,7 +127,6 @@ void run3(String input) {
         }
     }
 
-    boolean oxyOne;
     u32 a = 0;
     u32 b = 0;
     for(usz i = 0; i < k; ++i) {
@@ -135,10 +134,8 @@ void run3(String input) {
         b *= 2;
         if(counts[i] > lines.size() / 2) {
             ++a;
-            oxyOne = true;
         } else {
             ++b;
-            oxyOne = false;
         }
     }
     writeStdout(toString(a * b) + "\n");
