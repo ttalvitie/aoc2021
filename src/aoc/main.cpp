@@ -91,18 +91,10 @@ u32 rec(DynArray<String> lines, usz i, usz k, boolean oxy) {
         }
     }
     u8 keep;
-    if(oxy) {
-        if(2 * count >= lines.size()) {
-            keep = '1';
-        } else {
-            keep = '0';
-        }
+    if((2 * count >= lines.size()) == oxy) {
+        keep = '1';
     } else {
-        if(2 * count < lines.size()) {
-            keep = '1';
-        } else {
-            keep = '0';
-        }
+        keep = '0';
     }
     DynArray<String> newLines;
     for(usz lineIdx = 0; lineIdx < lines.size(); ++lineIdx) {
