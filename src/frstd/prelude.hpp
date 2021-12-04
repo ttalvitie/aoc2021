@@ -29,6 +29,8 @@ using frstd::uszw;
 
 using frstd::move;
 
+using frstd::Rc;
+
 using frstd::DynArray;
 
 using frstd::String;
