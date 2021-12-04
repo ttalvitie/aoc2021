@@ -11,10 +11,12 @@ using driver::Size;
 const int MaxPoolAllocExp = 17;
 const Size MaxPoolAllocSize = (Size)1 << MaxPoolAllocExp;
 
+static_assert(sizeof(char) == 1);
+
 struct MemoryPool {
     Size chunkSize;
     Size count;
-    void* next;
+    char* next;
     void* freeList;
 };
 MemoryPool memoryPool[MaxPoolAllocExp + 1];
@@ -52,11 +54,11 @@ void* allocateMemory(usz size) {
                 } else {
                     pool.chunkSize *= 2;
                 }
-                pool.next = driver::allocateMemory(pool.chunkSize);
+                pool.next = (char*)driver::allocateMemory(pool.chunkSize);
                 pool.count = pool.chunkSize / allocSize;
             }
 
-            ret = pool.next;
+            ret = (void*)pool.next;
             pool.next += allocSize;
             --pool.count;
         }
