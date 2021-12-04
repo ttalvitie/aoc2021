@@ -60,6 +60,14 @@ public:
         return data_[i.raw];
     }
 
+    operator ArraySliceImpl<const T>() const {
+#ifdef FRSTD_DEBUG
+        return ArraySliceImpl<const T>(data_, len_, dataRevisionIdx_, revisionIdx_);
+#else
+        return ArraySliceImpl<const T>(data_, len_);
+#endif
+    }
+
 private:
     T* data_;
     usz len_;
@@ -83,6 +91,9 @@ private:
 #else
     ArraySliceImpl(T* data, usz len) : data_(data), len_(len) {}
 #endif
+
+    template <typename T2>
+    friend class ArraySliceImpl;
 
     template <typename T2>
     friend usz len(const ArraySliceImpl<T2>& arr);
@@ -366,8 +377,9 @@ MutArraySlice<T> mutSlice(DynArray<T>& arr) {
     return mutSlice(arr, 0);
 }
 
+
 template <typename T>
-bool operator==(const DynArray<T>& a, const DynArray<T>& b) {
+bool operator==(const ArraySliceImpl<T>& a, const ArraySliceImpl<T>& b) {
     if(len(a) != len(b)) {
         return false;
     }
@@ -379,8 +391,24 @@ bool operator==(const DynArray<T>& a, const DynArray<T>& b) {
     return true;
 }
 template <typename T>
-bool operator!=(const DynArray<T>& a, const DynArray<T>& b) {
+bool operator!=(const ArraySliceImpl<T>& a, const ArraySliceImpl<T>& b) {
     return !(a == b);
 }
+
+template <typename T> bool operator==(const DynArray<T>& a, const DynArray<T>& b) { return slice(a) == slice(b); }
+template <typename T> bool operator==(const ArraySliceImpl<T>& a, const DynArray<T>& b) { return slice(a) == slice(b); }
+template <typename T> bool operator==(const ArraySliceImpl<const T>& a, const DynArray<T>& b) { return slice(a) == slice(b); }
+template <typename T> bool operator==(const DynArray<T>& a, const ArraySliceImpl<T>& b) { return slice(a) == slice(b); }
+template <typename T> bool operator==(const DynArray<T>& a, const ArraySliceImpl<const T>& b) { return slice(a) == slice(b); }
+template <typename T> bool operator==(const ArraySliceImpl<T>& a, const ArraySliceImpl<const T>& b) { return slice(a) == slice(b); }
+template <typename T> bool operator==(const ArraySliceImpl<const T>& a, const ArraySliceImpl<T>& b) { return slice(a) == slice(b); }
+
+template <typename T> bool operator!=(const DynArray<T>& a, const DynArray<T>& b) { return slice(a) != slice(b); }
+template <typename T> bool operator!=(const ArraySliceImpl<T>& a, const DynArray<T>& b) { return slice(a) != slice(b); }
+template <typename T> bool operator!=(const ArraySliceImpl<const T>& a, const DynArray<T>& b) { return slice(a) != slice(b); }
+template <typename T> bool operator!=(const DynArray<T>& a, const ArraySliceImpl<T>& b) { return slice(a) != slice(b); }
+template <typename T> bool operator!=(const DynArray<T>& a, const ArraySliceImpl<const T>& b) { return slice(a) != slice(b); }
+template <typename T> bool operator!=(const ArraySliceImpl<T>& a, const ArraySliceImpl<const T>& b) { return slice(a) != slice(b); }
+template <typename T> bool operator!=(const ArraySliceImpl<const T>& a, const ArraySliceImpl<T>& b) { return slice(a) != slice(b); }
 
 }
