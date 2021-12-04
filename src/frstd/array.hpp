@@ -1,7 +1,6 @@
 #pragma once
 
 #include <frstd/baseutil.hpp>
-#include <frstd/driver.hpp>
 #include <frstd/integer.hpp>
 #include <frstd/memory.hpp>
 #include <frstd/meta.hpp>
@@ -101,7 +100,10 @@ public:
 
 private:
     void reset_() {
-        // TODO: free
+        if(data_ != nullptr) {
+            freeMemory(data_, capacity_);
+        }
+
         data_ = nullptr;
         len_ = 0;
         capacity_ = 0;
@@ -117,7 +119,7 @@ private:
             newCapacity = minCapacity;
         }
 
-        T* newData = (T*)driver::allocateMemory((newCapacity * sizeof(T)).raw);
+        T* newData = (T*)allocateMemory((newCapacity * sizeof(T)).raw);
         for(usz i = 0; i < len_; ++i) {
             new(&newData[i.raw]) T(move(data_[i.raw]));
             data_[i.raw].~T();
@@ -135,7 +137,7 @@ private:
         len_ = src.len_;
         capacity_ = src.len_;
 
-        data_ = (T*)driver::allocateMemory((len_ * sizeof(T)).raw);
+        data_ = (T*)allocateMemory((len_ * sizeof(T)).raw);
         for(usz i = 0; i < len_; ++i) {
             new(&data_[i.raw]) T(src.data_[i.raw]);
         }

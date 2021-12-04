@@ -40,14 +40,21 @@ Size readStdin(unsigned char* buf, Size size) {
 }
 
 void* allocateMemory(Size size) {
-    if(size == 0) {
-        size = 1;
+    if(size < (Size)(128 * 1024)) {
+        frstd::baseutil::fail("FAIL: Memory allocation with size less than 128 kilobytes requested from driver\n");
     }
     void* ret = malloc(size);
     if(ret == nullptr) {
-        frstd::baseutil::fail("FAIL: Memory allocation failed");
+        frstd::baseutil::fail("FAIL: Memory allocation in driver failed\n");
     }
     return ret;
+}
+
+void freeMemory(void* ptr) {
+    if(ptr == nullptr) {
+        frstd::baseutil::fail("FAIL: Memory free at NULL requested from driver\n");
+    }
+    free(ptr);
 }
 
 }
