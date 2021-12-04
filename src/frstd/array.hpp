@@ -18,7 +18,7 @@ inline void indexOutOfBounds() {
 }
 
 inline void invalidSlice() {
-    baseutil::fail("FAIL: Use of invalidated array slice detected\n");
+    baseutil::fail("FAIL: Element access through invalidated array slice detected\n");
     __builtin_unreachable();
 }
 
@@ -68,6 +68,12 @@ private:
     Rc<usz> dataRevisionIdx_;
     usz revisionIdx_;
 
+    ArraySliceImpl(T* data, usz len, Rc<usz> dataRevisionIdx, usz revisionIdx)
+        : data_(data)
+        , len_(len)
+        , dataRevisionIdx_(dataRevisionIdx)
+        , revisionIdx_(revisionIdx)
+    {}
     ArraySliceImpl(T* data, usz len, Rc<usz> dataRevisionIdx)
         : data_(data)
         , len_(len)
@@ -81,7 +87,11 @@ private:
     template <typename T2>
     friend usz len(const ArraySliceImpl<T2>& arr);
     template <typename T2>
+    friend ArraySlice<T2> slice(const ArraySliceImpl<T2>& arr, usz start, usz end);
+    template <typename T2>
     friend ArraySlice<T2> slice(const DynArray<T2>& arr, usz start, usz end);
+    template <typename T2>
+    friend MutArraySlice<T2> mutSlice(const ArraySliceImpl<T2>& arr, usz start, usz end);
     template <typename T2>
     friend MutArraySlice<T2> mutSlice(DynArray<T2>& arr, usz start, usz end);
 };
@@ -271,13 +281,25 @@ bool isEmpty(const DynArray<T>& arr) {
 }
 
 template <typename T>
-ArraySlice<T> slice(const DynArray<T>& arr) {
-    return slice(arr, 0);
+ArraySlice<T> slice(const ArraySliceImpl<T>& arr, usz start, usz end) {
+    if(start > end || end > len(arr)) {
+        array_::indexOutOfBounds();
+    }
+#ifdef FRSTD_DEBUG
+    return ArraySlice<const T>(arr.data_ + start.raw, end - start, arr.dataRevisionIdx_, arr.revisionIdx_);
+#else
+    return ArraySlice<const T>(arr.data_ + start.raw, end - start);
+#endif
 }
 template <typename T>
-ArraySlice<T> slice(const DynArray<T>& arr, usz start) {
+ArraySlice<T> slice(const ArraySliceImpl<T>& arr, usz start) {
     return slice(arr, start, len(arr));
 }
+template <typename T>
+ArraySlice<T> slice(const ArraySliceImpl<T>& arr) {
+    return slice(arr, 0);
+}
+
 template <typename T>
 ArraySlice<T> slice(const DynArray<T>& arr, usz start, usz end) {
     if(start > end || end > len(arr)) {
@@ -292,15 +314,35 @@ ArraySlice<T> slice(const DynArray<T>& arr, usz start, usz end) {
     return ArraySlice<T>(arr.data() + start.raw, end - start);
 #endif
 }
+template <typename T>
+ArraySlice<T> slice(const DynArray<T>& arr, usz start) {
+    return slice(arr, start, len(arr));
+}
+template <typename T>
+ArraySlice<T> slice(const DynArray<T>& arr) {
+    return slice(arr, 0);
+}
 
 template <typename T>
-MutArraySlice<T> mutSlice(DynArray<T>& arr) {
-    return mutSlice(arr, 0);
+MutArraySlice<T> mutSlice(const ArraySliceImpl<T>& arr, usz start, usz end) {
+    if(start > end || end > len(arr)) {
+        array_::indexOutOfBounds();
+    }
+#ifdef FRSTD_DEBUG
+    return MutArraySlice<T>(arr.data_ + start.raw, end - start, arr.dataRevisionIdx_, arr.revisionIdx_);
+#else
+    return MutArraySlice<T>(arr.data_ + start.raw, end - start);
+#endif
 }
 template <typename T>
-MutArraySlice<T> mutSlice(DynArray<T>& arr, usz start) {
+MutArraySlice<T> mutSlice(const ArraySliceImpl<T>& arr, usz start) {
     return mutSlice(arr, start, len(arr));
 }
+template <typename T>
+MutArraySlice<T> mutSlice(const ArraySliceImpl<T>& arr) {
+    return mutSlice(arr, 0);
+}
+
 template <typename T>
 MutArraySlice<T> mutSlice(DynArray<T>& arr, usz start, usz end) {
     if(start > end || end > len(arr)) {
@@ -314,6 +356,14 @@ MutArraySlice<T> mutSlice(DynArray<T>& arr, usz start, usz end) {
 #else
     return MutArraySlice<T>(arr.data() + start.raw, end - start);
 #endif
+}
+template <typename T>
+MutArraySlice<T> mutSlice(DynArray<T>& arr, usz start) {
+    return mutSlice(arr, start, len(arr));
+}
+template <typename T>
+MutArraySlice<T> mutSlice(DynArray<T>& arr) {
+    return mutSlice(arr, 0);
 }
 
 template <typename T>
