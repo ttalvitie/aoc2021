@@ -42,10 +42,10 @@ inline usz len(const String& str) {
     return len(str.bytes);
 }
 
-inline boolean operator==(const String& a, const String& b) {
+inline bool operator==(const String& a, const String& b) {
     return a.bytes == b.bytes;
 }
-inline boolean operator!=(const String& a, const String& b) {
+inline bool operator!=(const String& a, const String& b) {
     return a.bytes != b.bytes;
 }
 
@@ -201,7 +201,7 @@ template <> struct FromString<iszw> { static iszw parse(const String& str) { ret
 template <> struct FromString<usz> { static usz parse(const String& str) { return string_::unsignedIntegerFromStringImpl<usz>(str); } };
 template <> struct FromString<uszw> { static uszw parse(const String& str) { return string_::unsignedIntegerFromStringImpl<uszw>(str); } };
 
-inline boolean isWhitespace(u8 byte) {
+inline bool isWhitespace(u8 byte) {
     return (byte >= 9 && byte <= 13) || (byte >= 28 && byte <= 32);
 }
 
@@ -243,7 +243,7 @@ inline void writeStdout(const String& str) {
     driver::writeStdout((const unsigned char*)str.data(), len(str).raw);
 }
 inline void writeStderr(const String& str) {
-    driver::writeStdout((const unsigned char*)str.data(), len(str).raw);
+    driver::writeStderr((const unsigned char*)str.data(), len(str).raw);
 }
 inline String readStdin() {
     String ret;

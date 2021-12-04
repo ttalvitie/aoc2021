@@ -1,13 +1,10 @@
 #pragma once
 
-#include <frstd/boolean.hpp>
 #include <frstd/array.hpp>
 #include <frstd/integer.hpp>
 #include <frstd/memory.hpp>
 #include <frstd/meta.hpp>
 #include <frstd/string.hpp>
-
-using frstd::boolean;
 
 using frstd::i8;
 using frstd::i8w;

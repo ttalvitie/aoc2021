@@ -155,7 +155,7 @@ usz len(const DynArray<T>& arr) {
 }
 
 template <typename T>
-boolean operator==(const DynArray<T>& a, const DynArray<T>& b) {
+bool operator==(const DynArray<T>& a, const DynArray<T>& b) {
     if(len(a) != len(b)) {
         return false;
     }
@@ -167,7 +167,7 @@ boolean operator==(const DynArray<T>& a, const DynArray<T>& b) {
     return true;
 }
 template <typename T>
-boolean operator!=(const DynArray<T>& a, const DynArray<T>& b) {
+bool operator!=(const DynArray<T>& a, const DynArray<T>& b) {
     return !(a == b);
 }
 
