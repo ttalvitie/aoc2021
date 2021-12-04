@@ -79,6 +79,8 @@ private:
 #endif
 
     template <typename T2>
+    friend usz len(const ArraySliceImpl<T2>& arr);
+    template <typename T2>
     friend ArraySlice<T2> slice(const DynArray<T2>& arr, usz start, usz end);
     template <typename T2>
     friend MutArraySlice<T2> mutSlice(DynArray<T2>& arr, usz start, usz end);
@@ -249,13 +251,23 @@ private:
 };
 
 template <typename T>
+usz len(const ArraySliceImpl<T>& arr) {
+    return arr.len_;
+}
+
+template <typename T>
 usz len(const DynArray<T>& arr) {
     return arr.len_;
 }
 
 template <typename T>
+bool isEmpty(const ArraySliceImpl<T>& arr) {
+    return len(arr) == 0;
+}
+
+template <typename T>
 bool isEmpty(const DynArray<T>& arr) {
-    return len(arr) != 0;
+    return len(arr) == 0;
 }
 
 template <typename T>
