@@ -61,13 +61,13 @@ void freeMemory(void* ptr) {
 }
 
 // Entry point defined by program.
-void run(frstd::DynArray<frstd::String> args);
+void run(const frstd::DynArray<frstd::String>& args);
 
 int main(int argc, char* argv[]) {
     frstd::DynArray<frstd::String> args;
     for(int i = 1; i < argc; ++i) {
         args.push(argv[i]);
     }
-    run(move(args));
+    run(args);
     return 0;
 }

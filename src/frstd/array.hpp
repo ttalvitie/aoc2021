@@ -101,7 +101,10 @@ public:
 private:
     void reset_() {
         if(data_ != nullptr) {
-            freeMemory(data_, capacity_);
+            for(usz i = 0; i < len_; ++i) {
+                data_[i.raw].~T();
+            }
+            freeMemory(data_, capacity_ * sizeof(T));
         }
 
         data_ = nullptr;
@@ -119,10 +122,14 @@ private:
             newCapacity = minCapacity;
         }
 
-        T* newData = (T*)allocateMemory((newCapacity * sizeof(T)).raw);
+        T* newData = (T*)allocateMemory(newCapacity * sizeof(T));
         for(usz i = 0; i < len_; ++i) {
             new(&newData[i.raw]) T(move(data_[i.raw]));
             data_[i.raw].~T();
+        }
+
+        if(data_ != nullptr) {
+            freeMemory(data_, capacity_ * sizeof(T));
         }
 
         data_ = newData;
@@ -137,7 +144,7 @@ private:
         len_ = src.len_;
         capacity_ = src.len_;
 
-        data_ = (T*)allocateMemory((len_ * sizeof(T)).raw);
+        data_ = (T*)allocateMemory(capacity_ * sizeof(T));
         for(usz i = 0; i < len_; ++i) {
             new(&data_[i.raw]) T(src.data_[i.raw]);
         }

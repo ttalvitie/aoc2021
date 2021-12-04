@@ -205,7 +205,7 @@ inline bool isWhitespace(u8 byte) {
     return (byte >= 9 && byte <= 13) || (byte >= 28 && byte <= 32);
 }
 
-inline String strip(String str) {
+inline String strip(const String& str) {
     usz start = 0;
     usz end = len(str);
     while(start < end && isWhitespace(str[start])) {
@@ -221,7 +221,7 @@ inline String strip(String str) {
     return ret;
 }
 
-inline DynArray<String> split(String str, u8 sep) {
+inline DynArray<String> split(const String& str, u8 sep) {
     DynArray<String> ret;
     String acc;
     usz pos = 0;

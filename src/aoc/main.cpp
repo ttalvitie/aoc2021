@@ -227,7 +227,9 @@ void run4(String input) {
     writeStdout(toString(lastScore) + "\n");
 }
 
-void run(DynArray<String> args) {
+void run(const DynArray<String>& args) {
+    frstd::LeakCheck leakCheck;
+
     if(len(args) != 1) {
         writeStderr("Usage: aoc2021 <day#>\n");
         return;
