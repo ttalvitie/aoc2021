@@ -4,6 +4,7 @@
 #include <frstd/integer.hpp>
 #include <frstd/memory.hpp>
 #include <frstd/meta.hpp>
+#include <frstd/option.hpp>
 #include <frstd/string.hpp>
 
 using frstd::i8;
@@ -30,6 +31,8 @@ using frstd::uszw;
 using frstd::move;
 
 using frstd::Rc;
+
+using frstd::Option;
 
 using frstd::DynArray;
 

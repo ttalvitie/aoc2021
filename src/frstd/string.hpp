@@ -42,6 +42,10 @@ inline usz len(const String& str) {
     return len(str.bytes);
 }
 
+inline bool isEmpty(const String& str) {
+    return isEmpty(str.bytes);
+}
+
 inline bool operator==(const String& a, const String& b) {
     return a.bytes == b.bytes;
 }

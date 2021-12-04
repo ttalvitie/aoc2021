@@ -164,6 +164,11 @@ usz len(const DynArray<T>& arr) {
 }
 
 template <typename T>
+bool isEmpty(const DynArray<T>& arr) {
+    return len(arr) != 0;
+}
+
+template <typename T>
 bool operator==(const DynArray<T>& a, const DynArray<T>& b) {
     if(len(a) != len(b)) {
         return false;
