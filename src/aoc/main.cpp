@@ -227,6 +227,96 @@ void run4(String input) {
     writeStdout(toString(lastScore) + "\n");
 }
 
+struct Line {
+    usz x1;
+    usz y1;
+    usz x2;
+    usz y2;
+};
+
+usz min(usz a, usz b) { return a < b ? a : b; }
+usz max(usz a, usz b) { return a < b ? b : a; }
+void swap(usz& a, usz& b) { usz t = a; a = b; b = t; }
+isz abs(isz a) { return a < 0 ? -a : a; }
+
+void run5(String input) {
+    DynArray<String> inputLines = split(strip(input), '\n');
+    DynArray<Line> lines;
+    for(usz i = 0; i < len(inputLines); ++i) {
+        DynArray<String> parts = split(strip(inputLines[i]), ' ');
+        DynArray<String> p1 = split(strip(parts[0]), ',');
+        DynArray<String> p2 = split(strip(parts[2]), ',');
+        Line line;
+        line.x1 = fromString<usz>(p1[0]);
+        line.y1 = fromString<usz>(p1[1]);
+        line.x2 = fromString<usz>(p2[0]);
+        line.y2 = fromString<usz>(p2[1]);
+        lines.push(line);
+    }
+
+    usz w = 0;
+    usz h = 0;
+    for(usz i = 0; i < len(lines); ++i) {
+        Line line = lines[i];
+        w = max(w, max(line.x1, line.x2) + 1);
+        h = max(h, max(line.y1, line.y2) + 1);
+    }
+
+    DynArray<DynArray<usz>> counts;
+    for(usz y = 0; y < h; ++y) {
+        counts.push(DynArray<usz>(w, 0));
+    }
+
+    for(usz i = 0; i < len(lines); ++i) {
+        Line line = lines[i];
+        if(line.x1 == line.x2 || line.y1 == line.y2) {
+            for(usz y = min(line.y1, line.y2); y <= max(line.y1, line.y2); ++y) {
+                for(usz x = min(line.x1, line.x2); x <= max(line.x1, line.x2); ++x) {
+                    ++counts[y][x];
+                }
+            }
+        }
+    }
+
+    usz ret = 0;
+    for(usz y = 0; y < h; ++y) {
+        for(usz x = 0; x < w; ++x) {
+            if(counts[y][x] >= 2) ++ret;
+        }
+    }
+
+    writeStdout(toString(ret) + "\n");
+
+    for(usz i = 0; i < len(lines); ++i) {
+        Line line = lines[i];
+        isz dx = (isz)line.x2 - (isz)line.x1;
+        isz dy = (isz)line.y2 - (isz)line.y1;
+        if(abs(dx) == abs(dy)) {
+            dx /= abs(dx);
+            dy /= abs(dy);
+            usz x = line.x1;
+            usz y = line.y1;
+            while(true) {
+                ++counts[y][x];
+                if(x == line.x2 && y == line.y2) {
+                    break;
+                }
+                x = (usz)((isz)x + dx);
+                y = (usz)((isz)y + dy);
+            }
+        }
+    }
+
+    usz ret2 = 0;
+    for(usz y = 0; y < h; ++y) {
+        for(usz x = 0; x < w; ++x) {
+            if(counts[y][x] >= 2) ++ret2;
+        }
+    }
+
+    writeStdout(toString(ret2) + "\n");
+}
+
 void run(const DynArray<String>& args) {
     frstd::LeakCheck leakCheck;
 
@@ -247,6 +337,9 @@ void run(const DynArray<String>& args) {
     } else if(day == "4") {
         String input = readStdin();
         run4(move(input));
+    } else if(day == "5") {
+        String input = readStdin();
+        run5(move(input));
     } else {
         writeStderr("Unknown day\n");
     }
