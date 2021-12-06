@@ -317,6 +317,33 @@ void run5(String input) {
     writeStdout(toString(ret2) + "\n");
 }
 
+void run6(String input) {
+    DynArray<String> init = split(strip(input), ',');
+    DynArray<u64> counts(9, 0);
+    for(usz i = 0; i < len(init); ++i) {
+        ++counts[fromString<usz>(init[i])];
+    }
+    u64 total1 = 0;
+    u64 total2 = 0;
+    for(usz day = 0; day < 256; ++day) {
+        DynArray<u64> newCounts(9, 0);
+        newCounts[6] = newCounts[8] = counts[0];
+        for(usz i = 0; i < 8; ++i) {
+            newCounts[i] += counts[i + 1];
+        }
+        counts = move(newCounts);
+
+        u64 total = 0;
+        for(usz i = 0; i < 9; ++i) {
+            total += counts[i];
+        }
+        if(day == 79) total1 = total;
+        if(day == 255) total2 = total;
+    }
+    writeStdout(toString(total1) + "\n");
+    writeStdout(toString(total2) + "\n");
+}
+
 void run(const DynArray<String>& args) {
     frstd::LeakCheck leakCheck;
 
@@ -340,6 +367,9 @@ void run(const DynArray<String>& args) {
     } else if(day == "5") {
         String input = readStdin();
         run5(move(input));
+    } else if(day == "6") {
+        String input = readStdin();
+        run6(move(input));
     } else {
         writeStderr("Unknown day\n");
     }
