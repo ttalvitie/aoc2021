@@ -344,6 +344,66 @@ void run6(String input) {
     writeStdout(toString(total2) + "\n");
 }
 
+void sort(MutArraySlice<i32> s, DynArray<i32>& tmp) {
+    if(len(s) <= 1) {
+        return;
+    }
+    MutArraySlice<i32> a = mutSlice(s, 0, len(s) / 2);
+    MutArraySlice<i32> b = mutSlice(s, len(s) / 2);
+    sort(a, tmp);
+    sort(b, tmp);
+    usz i = 0;
+    usz j = 0;
+    tmp.resize(0, 0);
+    while(i < len(a) && j < len(b)) {
+        if(a[i] < b[j]) {
+            tmp.push(a[i++]);
+        } else {
+            tmp.push(b[j++]);
+        }
+    }
+    while(i < len(a)) {
+        tmp.push(a[i++]);
+    }
+    while(j < len(b)) {
+        tmp.push(b[j++]);
+    }
+    for(usz k = 0; k < len(tmp); ++k) {
+        s[k] = tmp[k];
+    }
+}
+
+void run7(String input) {
+    DynArray<String> elems = split(strip(input), ',');
+    DynArray<i32> xs;
+    for(usz i = 0; i < len(elems); ++i) {
+        xs.push(fromString<i32>(elems[i]));
+    }
+    DynArray<i32> tmp;
+    sort(mutSlice(xs), tmp);
+    i32 mid = xs[len(xs) / 2];
+    i32 ret = 0;
+    for(usz i = 0; i < len(xs); ++i) {
+        i32 d = xs[i] - mid;
+        ret += (d < 0 ? -d : d);
+    }
+    writeStdout(toString(ret) + "\n");
+
+    i32 best = -1;
+    for(i32 p = xs[0]; p <= xs[len(xs) - 1]; ++p) {
+        i32 cost = 0;
+        for(usz i = 0; i < len(xs); ++i) {
+            i32 d = xs[i] - p;
+            d = (d < 0 ? -d : d);
+            cost += d * (d + 1) / 2;
+        }
+        if(best == -1 || cost < best) {
+            best = cost;
+        }
+    }
+    writeStdout(toString(best) + "\n");
+}
+
 void run(const DynArray<String>& args) {
     frstd::LeakCheck leakCheck;
 
@@ -370,6 +430,9 @@ void run(const DynArray<String>& args) {
     } else if(day == "6") {
         String input = readStdin();
         run6(move(input));
+    } else if(day == "7") {
+        String input = readStdin();
+        run7(move(input));
     } else {
         writeStderr("Unknown day\n");
     }
