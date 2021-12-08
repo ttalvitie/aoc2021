@@ -404,6 +404,110 @@ void run7(String input) {
     writeStdout(toString(best) + "\n");
 }
 
+u32 operator&(u32 a, u32 b) {
+    return u32(a.raw & b.raw);
+}
+u32 operator|(u32 a, u32 b) {
+    return u32(a.raw | b.raw);
+}
+u32 operator<<(u32 a, u32 b) {
+    return u32(a.raw << b.raw);
+}
+
+u32 parsePattern(const String& str) {
+    u32 ret = 0;
+    for(usz i = 0; i < len(str); ++i) {
+        ret = ret | ((u32)1 << (u32)(str[i] - 'a'));
+    }
+    return ret;
+}
+u32 mapPattern(u32 pattern, const DynArray<Option<u32>>& map) {
+    u32 ret = 0;
+    for(u32 i = 0; i < 7; ++i) {
+        if((pattern & ((u32)1 << i)) != 0) {
+            ret = ret | ((u32)1 << getValue(map[(usz)i]));
+        }
+    }
+    return ret;
+}
+
+bool findMap(const DynArray<u32>& numbers, const DynArray<u32>& patterns, DynArray<Option<u32>>& map, u32 used, u32 i) {
+    if(i == 7) {
+        for(usz i = 0; i < 10; ++i) {
+            u32 number = mapPattern(patterns[i], map);
+            bool found = false;
+            for(usz j = 0; j < 10; ++j) {
+                if(numbers[j] == number) {
+                    found = true;
+                }
+            }
+            if(!found) return false;
+        }
+        return true;
+    }
+    for(u32 j = 0; j < 7; ++j) {
+        if((used & ((u32)1 << j)) == 0) {
+            map[(usz)i] = j;
+            if(findMap(numbers, patterns, map, used | ((u32)1 << j), i + 1)) {
+                return true;
+            }
+        }
+    }
+    map[(usz)i] = Option<u32>();
+    return false;
+}
+
+void run8(String input) {
+    DynArray<u32> numbers;
+    numbers.push(parsePattern("abcefg"));
+    numbers.push(parsePattern("cf"));
+    numbers.push(parsePattern("acdeg"));
+    numbers.push(parsePattern("acdfg"));
+    numbers.push(parsePattern("bcdf"));
+    numbers.push(parsePattern("abdfg"));
+    numbers.push(parsePattern("abdefg"));
+    numbers.push(parsePattern("acf"));
+    numbers.push(parsePattern("abcdefg"));
+    numbers.push(parsePattern("abcdfg"));
+
+    DynArray<String> lines = split(strip(input), '\n');
+
+    usz res1 = 0;
+    usz res2 = 0;
+    for(usz lineIdx = 0; lineIdx < len(lines); ++lineIdx) {
+        const String& line = lines[lineIdx];
+        DynArray<String> items = split(strip(line), ' ');
+        DynArray<u32> patterns;
+        DynArray<u32> output;
+        for(usz i = 0; i < 10; ++i) {
+            patterns.push(parsePattern(items[i]));
+        }
+        for(usz i = 0; i < 4; ++i) {
+            output.push(parsePattern(items[11 + i]));
+        }
+        DynArray<Option<u32>> map(7, {});
+        if(!findMap(numbers, patterns, map, 0, 0)) {
+            frstd::baseutil::fail("FAIL: No map found\n");
+        }
+        u32 value = 0;
+        for(usz i = 0; i < len(output); ++i) {
+            u32 mapped = mapPattern(output[i], map);
+            u32 number = 0;
+            while(numbers[(usz)number] != mapped) {
+                ++number;
+            }
+            if(number == 1 || number == 4 || number == 7 || number == 8) {
+                ++res1;
+            }
+            value *= 10;
+            value += number;
+        }
+        res2 += (usz)value;
+    }
+    writeStdout(toString(res1) + "\n");
+    writeStdout(toString(res2) + "\n");
+}
+
 void run(const DynArray<String>& args) {
     frstd::LeakCheck leakCheck;
 
@@ -433,6 +537,9 @@ void run(const DynArray<String>& args) {
     } else if(day == "7") {
         String input = readStdin();
         run7(move(input));
+    } else if(day == "8") {
+        String input = readStdin();
+        run8(move(input));
     } else {
         writeStderr("Unknown day\n");
     }
