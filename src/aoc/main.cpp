@@ -508,6 +508,74 @@ void run8(String input) {
     writeStdout(toString(res2) + "\n");
 }
 
+u32 min(u32 a, u32 b) { return a < b ? a : b; }
+
+usz dfs(const DynArray<DynArray<u32>>& map, DynArray<DynArray<bool>>& seen, usz w, usz h, isz y, isz x) {
+    if(x < 0 || y < 0) return 0;
+    usz xu = (usz)x;
+    usz yu = (usz)y;
+    if(xu >= w || yu >= h) return 0;
+    if(seen[yu][xu]) return 0;
+    if(map[yu][xu] == 9) return 0;
+    seen[yu][xu] = true;
+    usz ret = 1;
+    ret += dfs(map, seen, w, h, y, x - 1);
+    ret += dfs(map, seen, w, h, y, x + 1);
+    ret += dfs(map, seen, w, h, y - 1, x);
+    ret += dfs(map, seen, w, h, y + 1, x);
+    return ret;
+}
+
+void run9(String input) {
+    DynArray<String> lines = split(strip(input), '\n');
+    usz h = len(lines);
+    usz w = len(lines[0]);
+
+    DynArray<DynArray<u32>> map(h, DynArray<u32>());
+    for(usz y = 0; y < h; ++y) {
+        for(usz x = 0; x < w; ++x) {
+            map[y].push((u32)(lines[y][x] - '0'));
+        }
+    }
+
+    u32 ret1 = 0;
+    for(usz y = 0; y < h; ++y) {
+        for(usz x = 0; x < w; ++x) {
+            u32 m = 10;
+            if(x > 0) m = min(m, map[y][x - 1]);
+            if(x < w - 1) m = min(m, map[y][x + 1]);
+            if(y > 0) m = min(m, map[y - 1][x]);
+            if(y < h - 1) m = min(m, map[y + 1][x]);
+            if(map[y][x] < m) {
+                ret1 += map[y][x] + 1;
+            }
+        }
+    }
+    writeStdout(toString(ret1) + "\n");
+
+    DynArray<DynArray<bool>> seen(h, DynArray<bool>());
+    for(usz y = 0; y < h; ++y) {
+        seen[y].resize(w, false);
+    }
+
+    DynArray<i32> sizes;
+    for(usz y = 0; y < h; ++y) {
+        for(usz x = 0; x < w; ++x) {
+            if(!seen[y][x]) {
+                sizes.push((i32)dfs(map, seen, w, h, (isz)y, (isz)x));
+            }
+        }
+    }
+    DynArray<i32> tmp;
+    sort(mutSlice(sizes), tmp);
+
+    i32 ret2 = 1;
+    for(usz i = len(sizes) - 3; i < len(sizes); ++i) {
+        ret2 *= sizes[i];
+    }
+    writeStdout(toString(ret2) + "\n");
+}
+
 void run(const DynArray<String>& args) {
     frstd::LeakCheck leakCheck;
 
@@ -540,6 +608,9 @@ void run(const DynArray<String>& args) {
     } else if(day == "8") {
         String input = readStdin();
         run8(move(input));
+    } else if(day == "9") {
+        String input = readStdin();
+        run9(move(input));
     } else {
         writeStderr("Unknown day\n");
     }
