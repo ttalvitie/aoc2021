@@ -576,6 +576,79 @@ void run9(String input) {
     writeStdout(toString(ret2) + "\n");
 }
 
+void sort(MutArraySlice<u64> s, DynArray<u64>& tmp) {
+    if(len(s) <= 1) {
+        return;
+    }
+    MutArraySlice<u64> a = mutSlice(s, 0, len(s) / 2);
+    MutArraySlice<u64> b = mutSlice(s, len(s) / 2);
+    sort(a, tmp);
+    sort(b, tmp);
+    usz i = 0;
+    usz j = 0;
+    tmp.resize(0, 0);
+    while(i < len(a) && j < len(b)) {
+        if(a[i] < b[j]) {
+            tmp.push(a[i++]);
+        } else {
+            tmp.push(b[j++]);
+        }
+    }
+    while(i < len(a)) {
+        tmp.push(a[i++]);
+    }
+    while(j < len(b)) {
+        tmp.push(b[j++]);
+    }
+    for(usz k = 0; k < len(tmp); ++k) {
+        s[k] = tmp[k];
+    }
+}
+
+void run10(String input) {
+    DynArray<String> lines = split(strip(input), '\n');
+    u64 ret1 = 0;
+    DynArray<u64> scores;
+    for(usz lineIdx = 0; lineIdx < len(lines); ++lineIdx) {
+        DynArray<u8> stack;
+        bool corrupted = false;
+        for(usz i = 0; i < len(lines[lineIdx]); ++i) {
+            u8 c = lines[lineIdx][i];
+            if(c == '(') { stack.push(')'); continue; }
+            if(c == '[') { stack.push(']'); continue; }
+            if(c == '{') { stack.push('}'); continue; }
+            if(c == '<') { stack.push('>'); continue; }
+            if(stack[len(stack) - 1] != c) {
+                if(c == ')') ret1 += 3;
+                if(c == ']') ret1 += 57;
+                if(c == '}') ret1 += 1197;
+                if(c == '>') ret1 += 25137;
+                corrupted = true;
+                break;
+            }
+            stack.resize(len(stack) - 1, 0);
+        }
+        if(!corrupted) {
+            u64 score = 0;
+            usz i = len(stack);
+            while(i > 0) {
+                --i;
+                u8 c = stack[i];
+                score *= 5;
+                if(c == ')') score += 1;
+                if(c == ']') score += 2;
+                if(c == '}') score += 3;
+                if(c == '>') score += 4;
+            }
+            scores.push(score);
+        }
+    }
+    writeStdout(toString(ret1) + "\n");
+    DynArray<u64> tmp;
+    sort(mutSlice(scores), tmp);
+    writeStdout(toString(scores[len(scores) / 2]) + "\n");
+}
+
 void run(const DynArray<String>& args) {
     frstd::LeakCheck leakCheck;
 
@@ -611,6 +684,9 @@ void run(const DynArray<String>& args) {
     } else if(day == "9") {
         String input = readStdin();
         run9(move(input));
+    } else if(day == "10") {
+        String input = readStdin();
+        run10(move(input));
     } else {
         writeStderr("Unknown day\n");
     }
