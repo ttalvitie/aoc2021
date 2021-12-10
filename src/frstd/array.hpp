@@ -2,6 +2,7 @@
 
 #include <frstd/baseutil.hpp>
 #include <frstd/integer.hpp>
+#include <frstd/iterable.hpp>
 #include <frstd/memory.hpp>
 #include <frstd/meta.hpp>
 #include <frstd/option.hpp>
@@ -28,7 +29,7 @@ template <typename T>
 class DynArray;
 
 template <typename T>
-class ArraySlice {
+class ArraySlice : public Iterable {
 public:
     ArraySlice()
         : data_(nullptr)
@@ -97,7 +98,7 @@ private:
 };
 
 template <typename T>
-class DynArray {
+class DynArray : public Iterable {
 public:
     DynArray() : data_(nullptr), len_(0), capacity_(0) {}
     DynArray(usz len, const T& value) : DynArray() {
@@ -378,5 +379,59 @@ template <typename T> bool operator!=(const DynArray<T>& a, const ArraySlice<T>&
 template <typename T> bool operator!=(const DynArray<T>& a, const ArraySlice<const T>& b) { return slice(a) != slice(b); }
 template <typename T> bool operator!=(const ArraySlice<T>& a, const ArraySlice<const T>& b) { return slice(a) != slice(b); }
 template <typename T> bool operator!=(const ArraySlice<const T>& a, const ArraySlice<T>& b) { return slice(a) != slice(b); }
+
+template <typename T>
+class ArraySliceIterator {
+public:
+    ArraySliceIterator(ArraySlice<T> s) : slice_(move(s)), idx_(0) {}
+
+    bool hasNext() const {
+        return idx_ < len(slice_);
+    }
+    T& next() {
+        return slice_[idx_++];
+    }
+
+private:
+    ArraySlice<T> slice_;
+    usz idx_;
+};
+
+template <typename T>
+class OwnedDynArrayIterator {
+public:
+    OwnedDynArrayIterator(DynArray<T> a) : array_(move(a)), idx_(0) {}
+
+    bool hasNext() const {
+        return idx_ < len(array_);
+    }
+    T&& next() {
+        return move(array_[idx_++]);
+    }
+
+private:
+    DynArray<T> array_;
+    usz idx_;
+};
+
+template <typename T>
+ArraySliceIterator<T> createIterator(ArraySlice<T> s) {
+    return ArraySliceIterator<T>(move(s));
+}
+
+template <typename T>
+OwnedDynArrayIterator<T> createIterator(DynArray<T>&& a) {
+    return OwnedDynArrayIterator<T>(move(a));
+}
+
+template <typename T>
+ArraySliceIterator<T> createIterator(DynArray<T>& a) {
+    return createIterator(slice(a));
+}
+
+template <typename T>
+ArraySliceIterator<const T> createIterator(const DynArray<T>& a) {
+    return createIterator(slice(a));
+}
 
 }
