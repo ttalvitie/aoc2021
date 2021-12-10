@@ -92,7 +92,7 @@ String unsignedIntegerToStringImpl(T val) {
 template <typename T>
 String integerToStringImpl(T val) {
     if(val < 0) {
-        return "-" + unsignedIntegerToStringImpl(-(typename T::UnsignedWrapInt)val);
+        return "-" + unsignedIntegerToStringImpl(-(SameSizeUnsignedWrapInt<T>)val);
     } else {
         return unsignedIntegerToStringImpl(val);
     }
@@ -118,7 +118,7 @@ T uncheckedIntegerFromStringImpl(const String& str, usz start = 0) {
 
 template <typename T>
 T unsignedIntegerFromStringImpl(const String& str) {
-    using Wrap = typename T::UnsignedWrapInt;
+    using Wrap = SameSizeUnsignedWrapInt<T>;
     Wrap ret = uncheckedIntegerFromStringImpl<Wrap>(str, 0);
     if(toString(ret) != str) {
         integerParseError();
@@ -131,7 +131,7 @@ T signedIntegerFromStringImpl(const String& str) {
     if(len(str) == 0) {
         integerParseError();
     }
-    using Wrap = typename T::SignedWrapInt;
+    using Wrap = SameSizeSignedWrapInt<T>;
     Wrap ret;
     if(str[0] == '-') {
         ret = -uncheckedIntegerFromStringImpl<Wrap>(str, 1);

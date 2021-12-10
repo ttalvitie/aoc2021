@@ -48,11 +48,6 @@ struct SignedWrap;
 
 template <typename U, typename S, bool IsSize>
 struct Unsigned {
-    using UnsignedInt = Unsigned<U, S, IsSize>;
-    using SignedInt = Signed<U, S, IsSize>;
-    using UnsignedWrapInt = UnsignedWrap<U, S, IsSize>;
-    using SignedWrapInt = SignedWrap<U, S, IsSize>;
-
     U raw;
 
     Unsigned() : raw(0) {}
@@ -92,11 +87,6 @@ struct Unsigned {
 
 template <typename U, typename S, bool IsSize>
 struct Signed {
-    using UnsignedInt = Unsigned<U, S, IsSize>;
-    using SignedInt = Signed<U, S, IsSize>;
-    using UnsignedWrapInt = UnsignedWrap<U, S, IsSize>;
-    using SignedWrapInt = SignedWrap<U, S, IsSize>;
-
     S raw;
 
     Signed() : raw(0) {}
@@ -137,11 +127,6 @@ struct Signed {
 
 template <typename U, typename S, bool IsSize>
 struct UnsignedWrap {
-    using UnsignedInt = Unsigned<U, S, IsSize>;
-    using SignedInt = Signed<U, S, IsSize>;
-    using UnsignedWrapInt = UnsignedWrap<U, S, IsSize>;
-    using SignedWrapInt = SignedWrap<U, S, IsSize>;
-
     U raw;
 
     UnsignedWrap() : raw(0) {}
@@ -182,11 +167,6 @@ struct UnsignedWrap {
 
 template <typename U, typename S, bool IsSize>
 struct SignedWrap {
-    using UnsignedInt = Unsigned<U, S, IsSize>;
-    using SignedInt = Signed<U, S, IsSize>;
-    using UnsignedWrapInt = UnsignedWrap<U, S, IsSize>;
-    using SignedWrapInt = SignedWrap<U, S, IsSize>;
-
     S raw;
 
     SignedWrap() : raw(0) {}
@@ -356,6 +336,18 @@ struct Dummy {};
 static_assert(sizeof(void*) == sizeof(Dummy*));
 static_assert(sizeof(void*) == sizeof(sizeof(int)));
 
+template <typename T>
+struct ToWrappers {};
+
+template <typename U, typename S, bool IsSize>
+struct ToWrappers<Unsigned<U, S, IsSize>> { using Type = Wrappers<U, S, IsSize>; };
+template <typename U, typename S, bool IsSize>
+struct ToWrappers<Signed<U, S, IsSize>> { using Type = Wrappers<U, S, IsSize>; };
+template <typename U, typename S, bool IsSize>
+struct ToWrappers<UnsignedWrap<U, S, IsSize>> { using Type = Wrappers<U, S, IsSize>; };
+template <typename U, typename S, bool IsSize>
+struct ToWrappers<SignedWrap<U, S, IsSize>> { using Type = Wrappers<U, S, IsSize>; };
+
 }
 
 using i8 = integer_::I8Wrappers::SignedInt;
@@ -378,5 +370,14 @@ using isz = integer_::ISizeWrappers::SignedInt;
 using iszw = integer_::ISizeWrappers::SignedWrapInt;
 using usz = integer_::ISizeWrappers::UnsignedInt;
 using uszw = integer_::ISizeWrappers::UnsignedWrapInt;
+
+template <typename T>
+using SameSizeUnsignedInt = typename integer_::ToWrappers<T>::Type::UnsignedInt;
+template <typename T>
+using SameSizeSignedInt = typename integer_::ToWrappers<T>::Type::SignedInt;
+template <typename T>
+using SameSizeUnsignedWrapInt = typename integer_::ToWrappers<T>::Type::UnsignedWrapInt;
+template <typename T>
+using SameSizeSignedWrapInt = typename integer_::ToWrappers<T>::Type::SignedWrapInt;
 
 }
