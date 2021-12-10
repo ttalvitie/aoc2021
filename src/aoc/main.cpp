@@ -6,10 +6,10 @@ void run1(String input) {
     DynArray<String> inputList = split(strip(input), '\n');
 
     i32 increaseCount = 0;
-    i32 prev;
-    for(usz i = 0; i < len(inputList); ++i) {
-        i32 x = fromString<i32>(strip(inputList[i]));
-        if(i != 0 && x > prev) {
+    i32 prev = -1;
+    for(const String& elem : inputList) {
+        i32 x = fromString<i32>(elem);
+        if(prev != -1 && x > prev) {
             ++increaseCount;
         }
         prev = x;
