@@ -418,17 +418,14 @@ template <typename T>
 ArraySliceIterator<T> createIterator(ArraySlice<T> s) {
     return ArraySliceIterator<T>(move(s));
 }
-
 template <typename T>
 OwnedDynArrayIterator<T> createIterator(DynArray<T>&& a) {
     return OwnedDynArrayIterator<T>(move(a));
 }
-
 template <typename T>
 ArraySliceIterator<T> createIterator(DynArray<T>& a) {
     return createIterator(slice(a));
 }
-
 template <typename T>
 ArraySliceIterator<const T> createIterator(const DynArray<T>& a) {
     return createIterator(slice(a));

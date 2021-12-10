@@ -1,13 +1,25 @@
 #pragma once
 
+#include <frstd/array.hpp>
 #include <frstd/baseutil.hpp>
 #include <frstd/driver.hpp>
-#include <frstd/array.hpp>
+#include <frstd/iterable.hpp>
 #include <frstd/meta.hpp>
 
 namespace frstd {
 
-struct String {
+struct ConstStringSlice {
+    ArraySlice<const u8> bytes;
+};
+struct StringSlice {
+    ArraySlice<u8> bytes;
+
+    operator ConstStringSlice() {
+        return {bytes};
+    }
+};
+
+struct String : public Iterable {
     DynArray<u8> bytes;
 
     String() {}
@@ -53,13 +65,49 @@ inline bool operator!=(const String& a, const String& b) {
     return a.bytes != b.bytes;
 }
 
+inline StringSlice slice(String& s, usz start, usz end) {
+    return {slice(s.bytes, start, end)};
+}
+inline StringSlice slice(String& s, usz start) {
+    return slice(s, start, len(s));
+}
+inline StringSlice slice(String& s) {
+    return slice(s, 0);
+}
+
+inline ConstStringSlice slice(const String& s, usz start, usz end) {
+    return {slice(s.bytes, start, end)};
+}
+inline ConstStringSlice slice(const String& s, usz start) {
+    return slice(s, start, len(s));
+}
+inline ConstStringSlice slice(const String& s) {
+    return slice(s, 0);
+}
+
+inline auto createIterator(const ConstStringSlice& s) {
+    return createIterator(s.bytes);
+}
+inline auto createIterator(const StringSlice& s) {
+    return createIterator(s.bytes);
+}
+inline auto createIterator(String&& a) {
+    return createIterator(move(a.bytes));
+}
+inline auto createIterator(String& a) {
+    return createIterator(a.bytes);
+}
+inline auto createIterator(const String& a) {
+    return createIterator(a.bytes);
+}
+
 inline String operator+(const String& a, const String& b) {
     String ret;
-    for(usz i = 0; i < len(a); ++i) {
-        ret.push(a[i]);
+    for(u8 c : a) {
+        ret.push(c);
     }
-    for(usz i = 0; i < len(b); ++i) {
-        ret.push(b[i]);
+    for(u8 c : b) {
+        ret.push(c);
     }
     return ret;
 }

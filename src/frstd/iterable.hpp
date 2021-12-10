@@ -12,8 +12,8 @@ namespace iterator_ {
 struct IterableMarker {};
 struct NotIterableMarker {};
 
-IterableMarker testFunc(Iterable*);
-NotIterableMarker testFunc(void*);
+IterableMarker testFunc(const Iterable*);
+NotIterableMarker testFunc(const void*);
 
 }
 
