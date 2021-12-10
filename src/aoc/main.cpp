@@ -1,7 +1,7 @@
 #include <frstd/prelude.hpp>
 
 #include <frstd/baseutil.hpp>
-
+/*
 void run1(String input) {
     DynArray<String> inputList = split(strip(input), '\n');
 
@@ -711,7 +711,7 @@ void run11(String input) {
     writeStdout(toString(ret1) + "\n");
     writeStdout(toString(ret2) + "\n");
 }
-
+*/
 void run(const DynArray<String>& args) {
     frstd::LeakCheck leakCheck;
 
@@ -720,7 +720,7 @@ void run(const DynArray<String>& args) {
         return;
     }
     String day = args[0];
-    if(day == "1") {
+/*    if(day == "1") {
         String input = readStdin();
         run1(move(input));
     } else if(day == "2") {
@@ -756,4 +756,4 @@ void run(const DynArray<String>& args) {
     } else {
         writeStderr("Unknown day\n");
     }
-}
+*/}

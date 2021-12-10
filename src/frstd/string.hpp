@@ -8,14 +8,22 @@
 
 namespace frstd {
 
-struct ConstStringSlice {
+struct ConstStringSlice : public Iterable {
     ArraySlice<const u8> bytes;
+
+    const u8& operator[](usz i) {
+        return bytes[i];
+    }
 };
-struct StringSlice {
+struct StringSlice : public Iterable {
     ArraySlice<u8> bytes;
 
     operator ConstStringSlice() {
-        return {bytes};
+        return {{}, bytes};
+    }
+
+    u8& operator[](usz i) {
+        return bytes[i];
     }
 };
 
@@ -30,6 +38,13 @@ struct String : public Iterable {
     }
 
     explicit String(DynArray<u8> src) : bytes(move(src)) {}
+
+    template <typename T, typename = VoidT<typename IsIterable<T>::Yes>>
+    explicit String(const T& src) {
+        for(u8 c : src) {
+            push(c);
+        }
+    }
 
     u8& operator[](usz i) {
         return bytes[i];
@@ -50,8 +65,14 @@ struct String : public Iterable {
     }
 };
 
-inline usz len(const String& str) {
-    return len(str.bytes);
+inline usz len(const String& s) {
+    return len(s.bytes);
+}
+inline usz len(const ConstStringSlice& s) {
+    return len(s.bytes);
+}
+inline usz len(const StringSlice& s) {
+    return len(s.bytes);
 }
 
 inline bool isEmpty(const String& str) {
@@ -65,8 +86,18 @@ inline bool operator!=(const String& a, const String& b) {
     return a.bytes != b.bytes;
 }
 
+inline ConstStringSlice slice(const String& s, usz start, usz end) {
+    return {{}, slice(s.bytes, start, end)};
+}
+inline ConstStringSlice slice(const String& s, usz start) {
+    return slice(s, start, len(s));
+}
+inline ConstStringSlice slice(const String& s) {
+    return slice(s, 0);
+}
+
 inline StringSlice slice(String& s, usz start, usz end) {
-    return {slice(s.bytes, start, end)};
+    return {{}, slice(s.bytes, start, end)};
 }
 inline StringSlice slice(String& s, usz start) {
     return slice(s, start, len(s));
@@ -75,13 +106,23 @@ inline StringSlice slice(String& s) {
     return slice(s, 0);
 }
 
-inline ConstStringSlice slice(const String& s, usz start, usz end) {
-    return {slice(s.bytes, start, end)};
+inline ConstStringSlice slice(const ConstStringSlice& s, usz start, usz end) {
+    return {{}, slice(s.bytes, start, end)};
 }
-inline ConstStringSlice slice(const String& s, usz start) {
+inline ConstStringSlice slice(const ConstStringSlice& s, usz start) {
     return slice(s, start, len(s));
 }
-inline ConstStringSlice slice(const String& s) {
+inline ConstStringSlice slice(const ConstStringSlice& s) {
+    return slice(s, 0);
+}
+
+inline StringSlice slice(const StringSlice& s, usz start, usz end) {
+    return {{}, slice(s.bytes, start, end)};
+}
+inline StringSlice slice(const StringSlice& s, usz start) {
+    return slice(s, start, len(s));
+}
+inline StringSlice slice(const StringSlice& s) {
     return slice(s, 0);
 }
 
@@ -251,21 +292,27 @@ inline bool isWhitespace(u8 byte) {
     return (byte >= 9 && byte <= 13) || (byte >= 28 && byte <= 32);
 }
 
-inline String strip(const String& str) {
+namespace string_ {
+
+template <typename T>
+auto stripImpl(T s) {
     usz start = 0;
-    usz end = len(str);
-    while(start < end && isWhitespace(str[start])) {
+    usz end = len(s);
+    while(start < end && isWhitespace(s[start])) {
         ++start;
     }
-    while(start < end && isWhitespace(str[end - 1])) {
+    while(start < end && isWhitespace(s[end - 1])) {
         --end;
     }
-    String ret;
-    for(usz i = start; i < end; ++i) {
-        ret.push(str[i]);
-    }
-    return ret;
+    return slice(s, start, end);
 }
+
+}
+
+inline ConstStringSlice strip(const ConstStringSlice& s) { return string_::stripImpl(s); }
+inline StringSlice strip(const StringSlice& s) { return string_::stripImpl(s); }
+inline ConstStringSlice strip(const String& s) { return string_::stripImpl(slice(s)); }
+inline StringSlice strip(String& s) { return string_::stripImpl(slice(s)); }
 
 inline DynArray<String> split(const String& str, u8 sep) {
     DynArray<String> ret;
