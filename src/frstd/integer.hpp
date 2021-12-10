@@ -38,7 +38,7 @@ struct IsIntWrapper {};
 }
 
 template <typename U, typename S, bool IsSize>
-struct Unsigned;
+struct UnsignedInt;
 template <typename U, typename S, bool IsSize>
 struct Signed;
 template <typename U, typename S, bool IsSize>
@@ -47,162 +47,162 @@ template <typename U, typename S, bool IsSize>
 struct SignedWrap;
 
 template <typename U, typename S, bool IsSize>
-struct Unsigned {
+struct UnsignedInt {
     U raw;
 
-    Unsigned() : raw(0) {}
+    UnsignedInt() : raw(0) {}
 
-    Unsigned(signed int src) { if(__builtin_add_overflow(src, 0, &raw)) { integer_::overflow(); } }
-    Unsigned(unsigned int src) { if(__builtin_add_overflow(src, 0, &raw)) { integer_::overflow(); } }
-    Unsigned(signed long int src) { if(__builtin_add_overflow(src, 0, &raw)) { integer_::overflow(); } }
-    Unsigned(unsigned long int src) { if(__builtin_add_overflow(src, 0, &raw)) { integer_::overflow(); } }
-    Unsigned(signed long long int src) { if(__builtin_add_overflow(src, 0, &raw)) { integer_::overflow(); } }
-    Unsigned(unsigned long long int src) { if(__builtin_add_overflow(src, 0, &raw)) { integer_::overflow(); } }
+    UnsignedInt(signed int src) { if(__builtin_add_overflow(src, 0, &raw)) { integer_::overflow(); } }
+    UnsignedInt(unsigned int src) { if(__builtin_add_overflow(src, 0, &raw)) { integer_::overflow(); } }
+    UnsignedInt(signed long int src) { if(__builtin_add_overflow(src, 0, &raw)) { integer_::overflow(); } }
+    UnsignedInt(unsigned long int src) { if(__builtin_add_overflow(src, 0, &raw)) { integer_::overflow(); } }
+    UnsignedInt(signed long long int src) { if(__builtin_add_overflow(src, 0, &raw)) { integer_::overflow(); } }
+    UnsignedInt(unsigned long long int src) { if(__builtin_add_overflow(src, 0, &raw)) { integer_::overflow(); } }
 
     template <typename T, typename = VoidT<typename integer_::IsIntWrapper<T>::Yes>>
-    explicit Unsigned(T src) { if(__builtin_add_overflow(src.raw, 0, &raw)) { integer_::overflow(); } }
+    explicit UnsignedInt(T src) { if(__builtin_add_overflow(src.raw, 0, &raw)) { integer_::overflow(); } }
 
-    bool operator==(Unsigned other) const { return raw == other.raw; }
-    bool operator!=(Unsigned other) const { return raw != other.raw; }
-    bool operator<(Unsigned other) const { return raw < other.raw; }
-    bool operator>(Unsigned other) const { return raw > other.raw; }
-    bool operator<=(Unsigned other) const { return raw <= other.raw; }
-    bool operator>=(Unsigned other) const { return raw >= other.raw; }
+    bool operator==(UnsignedInt other) const { return raw == other.raw; }
+    bool operator!=(UnsignedInt other) const { return raw != other.raw; }
+    bool operator<(UnsignedInt other) const { return raw < other.raw; }
+    bool operator>(UnsignedInt other) const { return raw > other.raw; }
+    bool operator<=(UnsignedInt other) const { return raw <= other.raw; }
+    bool operator>=(UnsignedInt other) const { return raw >= other.raw; }
 
-    Unsigned operator+(Unsigned other) const { Unsigned ret; if(__builtin_add_overflow(raw, other.raw, &ret.raw)) { integer_::overflow(); } return ret; }
-    Unsigned operator-(Unsigned other) const { Unsigned ret; if(__builtin_sub_overflow(raw, other.raw, &ret.raw)) { integer_::overflow(); } return ret; }
-    Unsigned operator*(Unsigned other) const { Unsigned ret; if(__builtin_mul_overflow(raw, other.raw, &ret.raw)) { integer_::overflow(); } return ret; }
-    Unsigned operator/(Unsigned other) const { if(other == 0) { integer_::divByZero(); } Unsigned ret; ret.raw = raw / other.raw; return ret; }
+    UnsignedInt operator+(UnsignedInt other) const { UnsignedInt ret; if(__builtin_add_overflow(raw, other.raw, &ret.raw)) { integer_::overflow(); } return ret; }
+    UnsignedInt operator-(UnsignedInt other) const { UnsignedInt ret; if(__builtin_sub_overflow(raw, other.raw, &ret.raw)) { integer_::overflow(); } return ret; }
+    UnsignedInt operator*(UnsignedInt other) const { UnsignedInt ret; if(__builtin_mul_overflow(raw, other.raw, &ret.raw)) { integer_::overflow(); } return ret; }
+    UnsignedInt operator/(UnsignedInt other) const { if(other == 0) { integer_::divByZero(); } UnsignedInt ret; ret.raw = raw / other.raw; return ret; }
 
-    Unsigned& operator+=(Unsigned other) { *this = *this + other; return *this; }
-    Unsigned& operator-=(Unsigned other) { *this = *this - other; return *this; }
-    Unsigned& operator*=(Unsigned other) { *this = *this * other; return *this; }
-    Unsigned& operator/=(Unsigned other) { *this = *this / other; return *this; }
+    UnsignedInt& operator+=(UnsignedInt other) { *this = *this + other; return *this; }
+    UnsignedInt& operator-=(UnsignedInt other) { *this = *this - other; return *this; }
+    UnsignedInt& operator*=(UnsignedInt other) { *this = *this * other; return *this; }
+    UnsignedInt& operator/=(UnsignedInt other) { *this = *this / other; return *this; }
 
-    Unsigned& operator++() { return *this += 1; }
-    Unsigned& operator--() { return *this -= 1; }
-    Unsigned operator++(int) { Unsigned ret = *this; ++*this; return ret; }
-    Unsigned operator--(int) { Unsigned ret = *this; --*this; return ret; }
+    UnsignedInt& operator++() { return *this += 1; }
+    UnsignedInt& operator--() { return *this -= 1; }
+    UnsignedInt operator++(int) { UnsignedInt ret = *this; ++*this; return ret; }
+    UnsignedInt operator--(int) { UnsignedInt ret = *this; --*this; return ret; }
 };
 
 template <typename U, typename S, bool IsSize>
-struct Signed {
+struct SignedInt {
     S raw;
 
-    Signed() : raw(0) {}
+    SignedInt() : raw(0) {}
 
-    Signed(signed int src) { if(__builtin_add_overflow(src, 0, &raw)) { integer_::overflow(); } }
-    Signed(unsigned int src) { if(__builtin_add_overflow(src, 0, &raw)) { integer_::overflow(); } }
-    Signed(signed long int src) { if(__builtin_add_overflow(src, 0, &raw)) { integer_::overflow(); } }
-    Signed(unsigned long int src) { if(__builtin_add_overflow(src, 0, &raw)) { integer_::overflow(); } }
-    Signed(signed long long int src) { if(__builtin_add_overflow(src, 0, &raw)) { integer_::overflow(); } }
-    Signed(unsigned long long int src) { if(__builtin_add_overflow(src, 0, &raw)) { integer_::overflow(); } }
+    SignedInt(signed int src) { if(__builtin_add_overflow(src, 0, &raw)) { integer_::overflow(); } }
+    SignedInt(unsigned int src) { if(__builtin_add_overflow(src, 0, &raw)) { integer_::overflow(); } }
+    SignedInt(signed long int src) { if(__builtin_add_overflow(src, 0, &raw)) { integer_::overflow(); } }
+    SignedInt(unsigned long int src) { if(__builtin_add_overflow(src, 0, &raw)) { integer_::overflow(); } }
+    SignedInt(signed long long int src) { if(__builtin_add_overflow(src, 0, &raw)) { integer_::overflow(); } }
+    SignedInt(unsigned long long int src) { if(__builtin_add_overflow(src, 0, &raw)) { integer_::overflow(); } }
 
     template <typename T, typename = VoidT<typename integer_::IsIntWrapper<T>::Yes>>
-    explicit Signed(T src) { if(__builtin_add_overflow(src.raw, 0, &raw)) { integer_::overflow(); } }
+    explicit SignedInt(T src) { if(__builtin_add_overflow(src.raw, 0, &raw)) { integer_::overflow(); } }
 
-    bool operator==(Signed other) const { return raw == other.raw; }
-    bool operator!=(Signed other) const { return raw != other.raw; }
-    bool operator<(Signed other) const { return raw < other.raw; }
-    bool operator>(Signed other) const { return raw > other.raw; }
-    bool operator<=(Signed other) const { return raw <= other.raw; }
-    bool operator>=(Signed other) const { return raw >= other.raw; }
+    bool operator==(SignedInt other) const { return raw == other.raw; }
+    bool operator!=(SignedInt other) const { return raw != other.raw; }
+    bool operator<(SignedInt other) const { return raw < other.raw; }
+    bool operator>(SignedInt other) const { return raw > other.raw; }
+    bool operator<=(SignedInt other) const { return raw <= other.raw; }
+    bool operator>=(SignedInt other) const { return raw >= other.raw; }
 
-    Signed operator-() const { Signed ret; if(__builtin_sub_overflow((S)0, raw, &ret.raw)) { integer_::overflow(); } return ret; }
-    Signed operator+(Signed other) const { Signed ret; if(__builtin_add_overflow(raw, other.raw, &ret.raw)) { integer_::overflow(); } return ret; }
-    Signed operator-(Signed other) const { Signed ret; if(__builtin_sub_overflow(raw, other.raw, &ret.raw)) { integer_::overflow(); } return ret; }
-    Signed operator*(Signed other) const { Signed ret; if(__builtin_mul_overflow(raw, other.raw, &ret.raw)) { integer_::overflow(); } return ret; }
-    Signed operator/(Signed other) const { if(other == 0) { integer_::divByZero(); } if(other == -1) { return -(*this); } Signed ret; ret.raw = raw / other.raw; return ret; }
+    SignedInt operator-() const { SignedInt ret; if(__builtin_sub_overflow((S)0, raw, &ret.raw)) { integer_::overflow(); } return ret; }
+    SignedInt operator+(SignedInt other) const { SignedInt ret; if(__builtin_add_overflow(raw, other.raw, &ret.raw)) { integer_::overflow(); } return ret; }
+    SignedInt operator-(SignedInt other) const { SignedInt ret; if(__builtin_sub_overflow(raw, other.raw, &ret.raw)) { integer_::overflow(); } return ret; }
+    SignedInt operator*(SignedInt other) const { SignedInt ret; if(__builtin_mul_overflow(raw, other.raw, &ret.raw)) { integer_::overflow(); } return ret; }
+    SignedInt operator/(SignedInt other) const { if(other == 0) { integer_::divByZero(); } if(other == -1) { return -(*this); } SignedInt ret; ret.raw = raw / other.raw; return ret; }
 
-    Signed& operator+=(Signed other) { *this = *this + other; return *this; }
-    Signed& operator-=(Signed other) { *this = *this - other; return *this; }
-    Signed& operator*=(Signed other) { *this = *this * other; return *this; }
-    Signed& operator/=(Signed other) { *this = *this / other; return *this; }
+    SignedInt& operator+=(SignedInt other) { *this = *this + other; return *this; }
+    SignedInt& operator-=(SignedInt other) { *this = *this - other; return *this; }
+    SignedInt& operator*=(SignedInt other) { *this = *this * other; return *this; }
+    SignedInt& operator/=(SignedInt other) { *this = *this / other; return *this; }
 
-    Signed& operator++() { return *this += 1; }
-    Signed& operator--() { return *this -= 1; }
-    Signed operator++(int) { Signed ret = *this; ++*this; return ret; }
-    Signed operator--(int) { Signed ret = *this; --*this; return ret; }
+    SignedInt& operator++() { return *this += 1; }
+    SignedInt& operator--() { return *this -= 1; }
+    SignedInt operator++(int) { SignedInt ret = *this; ++*this; return ret; }
+    SignedInt operator--(int) { SignedInt ret = *this; --*this; return ret; }
 };
 
 template <typename U, typename S, bool IsSize>
-struct UnsignedWrap {
+struct UnsignedWrapInt {
     U raw;
 
-    UnsignedWrap() : raw(0) {}
+    UnsignedWrapInt() : raw(0) {}
 
-    UnsignedWrap(signed int src) : raw((U)src) { }
-    UnsignedWrap(unsigned int src) : raw((U)src) { }
-    UnsignedWrap(signed long int src) : raw((U)src) { }
-    UnsignedWrap(unsigned long int src) : raw((U)src) { }
-    UnsignedWrap(signed long long int src) : raw((U)src) { }
-    UnsignedWrap(unsigned long long int src) : raw((U)src) { }
+    UnsignedWrapInt(signed int src) : raw((U)src) { }
+    UnsignedWrapInt(unsigned int src) : raw((U)src) { }
+    UnsignedWrapInt(signed long int src) : raw((U)src) { }
+    UnsignedWrapInt(unsigned long int src) : raw((U)src) { }
+    UnsignedWrapInt(signed long long int src) : raw((U)src) { }
+    UnsignedWrapInt(unsigned long long int src) : raw((U)src) { }
 
     template <typename T, typename = VoidT<typename integer_::IsIntWrapper<T>::Yes>>
-    explicit UnsignedWrap(T src) : raw((U)src.raw) { }
+    explicit UnsignedWrapInt(T src) : raw((U)src.raw) { }
 
-    bool operator==(UnsignedWrap other) const { return raw == other.raw; }
-    bool operator!=(UnsignedWrap other) const { return raw != other.raw; }
-    bool operator<(UnsignedWrap other) const { return raw < other.raw; }
-    bool operator>(UnsignedWrap other) const { return raw > other.raw; }
-    bool operator<=(UnsignedWrap other) const { return raw <= other.raw; }
-    bool operator>=(UnsignedWrap other) const { return raw >= other.raw; }
+    bool operator==(UnsignedWrapInt other) const { return raw == other.raw; }
+    bool operator!=(UnsignedWrapInt other) const { return raw != other.raw; }
+    bool operator<(UnsignedWrapInt other) const { return raw < other.raw; }
+    bool operator>(UnsignedWrapInt other) const { return raw > other.raw; }
+    bool operator<=(UnsignedWrapInt other) const { return raw <= other.raw; }
+    bool operator>=(UnsignedWrapInt other) const { return raw >= other.raw; }
 
-    UnsignedWrap operator-() const { UnsignedWrap ret; ret.raw = -raw; return ret; }
-    UnsignedWrap operator+(UnsignedWrap other) const { UnsignedWrap ret; ret.raw = raw + other.raw; return ret; }
-    UnsignedWrap operator-(UnsignedWrap other) const { UnsignedWrap ret; ret.raw = raw - other.raw; return ret; }
-    UnsignedWrap operator*(UnsignedWrap other) const { UnsignedWrap ret; ret.raw = raw * other.raw; return ret; }
-    UnsignedWrap operator/(UnsignedWrap other) const { if(other == 0) { integer_::divByZero(); } UnsignedWrap ret; ret.raw = raw / other.raw; return ret; }
+    UnsignedWrapInt operator-() const { UnsignedWrapInt ret; ret.raw = -raw; return ret; }
+    UnsignedWrapInt operator+(UnsignedWrapInt other) const { UnsignedWrapInt ret; ret.raw = raw + other.raw; return ret; }
+    UnsignedWrapInt operator-(UnsignedWrapInt other) const { UnsignedWrapInt ret; ret.raw = raw - other.raw; return ret; }
+    UnsignedWrapInt operator*(UnsignedWrapInt other) const { UnsignedWrapInt ret; ret.raw = raw * other.raw; return ret; }
+    UnsignedWrapInt operator/(UnsignedWrapInt other) const { if(other == 0) { integer_::divByZero(); } UnsignedWrapInt ret; ret.raw = raw / other.raw; return ret; }
 
-    UnsignedWrap& operator+=(UnsignedWrap other) { *this = *this + other; return *this; }
-    UnsignedWrap& operator-=(UnsignedWrap other) { *this = *this - other; return *this; }
-    UnsignedWrap& operator*=(UnsignedWrap other) { *this = *this * other; return *this; }
-    UnsignedWrap& operator/=(UnsignedWrap other) { *this = *this / other; return *this; }
+    UnsignedWrapInt& operator+=(UnsignedWrapInt other) { *this = *this + other; return *this; }
+    UnsignedWrapInt& operator-=(UnsignedWrapInt other) { *this = *this - other; return *this; }
+    UnsignedWrapInt& operator*=(UnsignedWrapInt other) { *this = *this * other; return *this; }
+    UnsignedWrapInt& operator/=(UnsignedWrapInt other) { *this = *this / other; return *this; }
 
-    UnsignedWrap& operator++() { return *this += 1; }
-    UnsignedWrap& operator--() { return *this -= 1; }
-    UnsignedWrap operator++(int) { UnsignedWrap ret = *this; ++*this; return ret; }
-    UnsignedWrap operator--(int) { UnsignedWrap ret = *this; --*this; return ret; }
+    UnsignedWrapInt& operator++() { return *this += 1; }
+    UnsignedWrapInt& operator--() { return *this -= 1; }
+    UnsignedWrapInt operator++(int) { UnsignedWrapInt ret = *this; ++*this; return ret; }
+    UnsignedWrapInt operator--(int) { UnsignedWrapInt ret = *this; --*this; return ret; }
 };
 
 template <typename U, typename S, bool IsSize>
-struct SignedWrap {
+struct SignedWrapInt {
     S raw;
 
-    SignedWrap() : raw(0) {}
+    SignedWrapInt() : raw(0) {}
 
-    SignedWrap(signed int src) : raw((S)src) { }
-    SignedWrap(unsigned int src) : raw((S)src) { }
-    SignedWrap(signed long int src) : raw((S)src) { }
-    SignedWrap(unsigned long int src) : raw((S)src) { }
-    SignedWrap(signed long long int src) : raw((S)src) { }
-    SignedWrap(unsigned long long int src) : raw((S)src) { }
+    SignedWrapInt(signed int src) : raw((S)src) { }
+    SignedWrapInt(unsigned int src) : raw((S)src) { }
+    SignedWrapInt(signed long int src) : raw((S)src) { }
+    SignedWrapInt(unsigned long int src) : raw((S)src) { }
+    SignedWrapInt(signed long long int src) : raw((S)src) { }
+    SignedWrapInt(unsigned long long int src) : raw((S)src) { }
 
     template <typename T, typename = VoidT<typename integer_::IsIntWrapper<T>::Yes>>
-    explicit SignedWrap(T src) : raw((S)src.raw) { }
+    explicit SignedWrapInt(T src) : raw((S)src.raw) { }
 
-    bool operator==(SignedWrap other) const { return raw == other.raw; }
-    bool operator!=(SignedWrap other) const { return raw != other.raw; }
-    bool operator<(SignedWrap other) const { return raw < other.raw; }
-    bool operator>(SignedWrap other) const { return raw > other.raw; }
-    bool operator<=(SignedWrap other) const { return raw <= other.raw; }
-    bool operator>=(SignedWrap other) const { return raw >= other.raw; }
+    bool operator==(SignedWrapInt other) const { return raw == other.raw; }
+    bool operator!=(SignedWrapInt other) const { return raw != other.raw; }
+    bool operator<(SignedWrapInt other) const { return raw < other.raw; }
+    bool operator>(SignedWrapInt other) const { return raw > other.raw; }
+    bool operator<=(SignedWrapInt other) const { return raw <= other.raw; }
+    bool operator>=(SignedWrapInt other) const { return raw >= other.raw; }
 
-    SignedWrap operator-() const { SignedWrap ret; ret.raw = (S)(-(U)raw); return ret; }
-    SignedWrap operator+(SignedWrap other) const { SignedWrap ret; ret.raw = (S)((U)raw + (U)other.raw); return ret; }
-    SignedWrap operator-(SignedWrap other) const { SignedWrap ret; ret.raw = (S)((U)raw - (U)other.raw); return ret; }
-    SignedWrap operator*(SignedWrap other) const { SignedWrap ret; ret.raw = (S)((U)raw * (U)other.raw); return ret; }
-    SignedWrap operator/(SignedWrap other) const { if(other == 0) { integer_::divByZero(); } if(other == -1) { return -(*this); } SignedWrap ret; ret.raw = raw / other.raw; return ret; }
+    SignedWrapInt operator-() const { SignedWrapInt ret; ret.raw = (S)(-(U)raw); return ret; }
+    SignedWrapInt operator+(SignedWrapInt other) const { SignedWrapInt ret; ret.raw = (S)((U)raw + (U)other.raw); return ret; }
+    SignedWrapInt operator-(SignedWrapInt other) const { SignedWrapInt ret; ret.raw = (S)((U)raw - (U)other.raw); return ret; }
+    SignedWrapInt operator*(SignedWrapInt other) const { SignedWrapInt ret; ret.raw = (S)((U)raw * (U)other.raw); return ret; }
+    SignedWrapInt operator/(SignedWrapInt other) const { if(other == 0) { integer_::divByZero(); } if(other == -1) { return -(*this); } SignedWrapInt ret; ret.raw = raw / other.raw; return ret; }
 
-    SignedWrap& operator+=(SignedWrap other) { *this = *this + other; return *this; }
-    SignedWrap& operator-=(SignedWrap other) { *this = *this - other; return *this; }
-    SignedWrap& operator*=(SignedWrap other) { *this = *this * other; return *this; }
-    SignedWrap& operator/=(SignedWrap other) { *this = *this / other; return *this; }
+    SignedWrapInt& operator+=(SignedWrapInt other) { *this = *this + other; return *this; }
+    SignedWrapInt& operator-=(SignedWrapInt other) { *this = *this - other; return *this; }
+    SignedWrapInt& operator*=(SignedWrapInt other) { *this = *this * other; return *this; }
+    SignedWrapInt& operator/=(SignedWrapInt other) { *this = *this / other; return *this; }
 
-    SignedWrap& operator++() { return *this += 1; }
-    SignedWrap& operator--() { return *this -= 1; }
-    SignedWrap operator++(int) { SignedWrap ret = *this; ++*this; return ret; }
-    SignedWrap operator--(int) { SignedWrap ret = *this; --*this; return ret; }
+    SignedWrapInt& operator++() { return *this += 1; }
+    SignedWrapInt& operator--() { return *this -= 1; }
+    SignedWrapInt operator++(int) { SignedWrapInt ret = *this; ++*this; return ret; }
+    SignedWrapInt operator--(int) { SignedWrapInt ret = *this; --*this; return ret; }
 };
 
 template <typename T, typename = VoidT<typename integer_::IsIntWrapper<T>::Yes>> bool operator==(signed int a, T b) { return (T)a == b; }
@@ -276,20 +276,20 @@ struct Wrappers {
     static constexpr int ByteCount = sizeof(U);
     static constexpr int BitCount = 8 * ByteCount;
 
-    using UnsignedInt = Unsigned<U, S, IsSize>;
-    using SignedInt = Signed<U, S, IsSize>;
-    using UnsignedWrapInt = UnsignedWrap<U, S, IsSize>;
-    using SignedWrapInt = SignedWrap<U, S, IsSize>;
+    using UnsignedInt = ::frstd::UnsignedInt<U, S, IsSize>;
+    using SignedInt = ::frstd::SignedInt<U, S, IsSize>;
+    using UnsignedWrapInt = ::frstd::UnsignedWrapInt<U, S, IsSize>;
+    using SignedWrapInt = ::frstd::SignedWrapInt<U, S, IsSize>;
 };
 
 template <typename U, typename S, bool IsSize>
-struct IsIntWrapper<Unsigned<U, S, IsSize>> { using Yes = int; };
+struct IsIntWrapper<UnsignedInt<U, S, IsSize>> { using Yes = int; };
 template <typename U, typename S, bool IsSize>
-struct IsIntWrapper<Signed<U, S, IsSize>> { using Yes = int; };
+struct IsIntWrapper<SignedInt<U, S, IsSize>> { using Yes = int; };
 template <typename U, typename S, bool IsSize>
-struct IsIntWrapper<UnsignedWrap<U, S, IsSize>> { using Yes = int; };
+struct IsIntWrapper<UnsignedWrapInt<U, S, IsSize>> { using Yes = int; };
 template <typename U, typename S, bool IsSize>
-struct IsIntWrapper<SignedWrap<U, S, IsSize>> { using Yes = int; };
+struct IsIntWrapper<SignedWrapInt<U, S, IsSize>> { using Yes = int; };
 
 template <bool IsSize>
 using CharWrappers = Wrappers<unsigned char, signed char, IsSize>;
@@ -340,13 +340,13 @@ template <typename T>
 struct ToWrappers {};
 
 template <typename U, typename S, bool IsSize>
-struct ToWrappers<Unsigned<U, S, IsSize>> { using Type = Wrappers<U, S, IsSize>; };
+struct ToWrappers<UnsignedInt<U, S, IsSize>> { using Type = Wrappers<U, S, IsSize>; };
 template <typename U, typename S, bool IsSize>
-struct ToWrappers<Signed<U, S, IsSize>> { using Type = Wrappers<U, S, IsSize>; };
+struct ToWrappers<SignedInt<U, S, IsSize>> { using Type = Wrappers<U, S, IsSize>; };
 template <typename U, typename S, bool IsSize>
-struct ToWrappers<UnsignedWrap<U, S, IsSize>> { using Type = Wrappers<U, S, IsSize>; };
+struct ToWrappers<UnsignedWrapInt<U, S, IsSize>> { using Type = Wrappers<U, S, IsSize>; };
 template <typename U, typename S, bool IsSize>
-struct ToWrappers<SignedWrap<U, S, IsSize>> { using Type = Wrappers<U, S, IsSize>; };
+struct ToWrappers<SignedWrapInt<U, S, IsSize>> { using Type = Wrappers<U, S, IsSize>; };
 
 }
 
