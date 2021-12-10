@@ -2,6 +2,7 @@
 
 #include <frstd/baseutil.hpp>
 #include <frstd/driver.hpp>
+#include <frstd/meta.hpp>
 
 namespace frstd {
 
@@ -31,11 +32,10 @@ inline void overflow() {
     __builtin_unreachable();
 }
 
-template <typename...>
-struct Void {};
-
 template <typename T>
 struct IsIntWrapper {};
+
+}
 
 template <typename U, typename S, bool IsSize>
 struct Unsigned;
@@ -57,15 +57,15 @@ struct Unsigned {
 
     Unsigned() : raw(0) {}
 
-    Unsigned(signed int src) { if(__builtin_add_overflow(src, 0, &raw)) { overflow(); } }
-    Unsigned(unsigned int src) { if(__builtin_add_overflow(src, 0, &raw)) { overflow(); } }
-    Unsigned(signed long int src) { if(__builtin_add_overflow(src, 0, &raw)) { overflow(); } }
-    Unsigned(unsigned long int src) { if(__builtin_add_overflow(src, 0, &raw)) { overflow(); } }
-    Unsigned(signed long long int src) { if(__builtin_add_overflow(src, 0, &raw)) { overflow(); } }
-    Unsigned(unsigned long long int src) { if(__builtin_add_overflow(src, 0, &raw)) { overflow(); } }
+    Unsigned(signed int src) { if(__builtin_add_overflow(src, 0, &raw)) { integer_::overflow(); } }
+    Unsigned(unsigned int src) { if(__builtin_add_overflow(src, 0, &raw)) { integer_::overflow(); } }
+    Unsigned(signed long int src) { if(__builtin_add_overflow(src, 0, &raw)) { integer_::overflow(); } }
+    Unsigned(unsigned long int src) { if(__builtin_add_overflow(src, 0, &raw)) { integer_::overflow(); } }
+    Unsigned(signed long long int src) { if(__builtin_add_overflow(src, 0, &raw)) { integer_::overflow(); } }
+    Unsigned(unsigned long long int src) { if(__builtin_add_overflow(src, 0, &raw)) { integer_::overflow(); } }
 
-    template <typename T, typename = Void<typename IsIntWrapper<T>::Yes>>
-    explicit Unsigned(T src) { if(__builtin_add_overflow(src.raw, 0, &raw)) { overflow(); } }
+    template <typename T, typename = VoidT<typename integer_::IsIntWrapper<T>::Yes>>
+    explicit Unsigned(T src) { if(__builtin_add_overflow(src.raw, 0, &raw)) { integer_::overflow(); } }
 
     bool operator==(Unsigned other) const { return raw == other.raw; }
     bool operator!=(Unsigned other) const { return raw != other.raw; }
@@ -74,10 +74,10 @@ struct Unsigned {
     bool operator<=(Unsigned other) const { return raw <= other.raw; }
     bool operator>=(Unsigned other) const { return raw >= other.raw; }
 
-    Unsigned operator+(Unsigned other) const { Unsigned ret; if(__builtin_add_overflow(raw, other.raw, &ret.raw)) { overflow(); } return ret; }
-    Unsigned operator-(Unsigned other) const { Unsigned ret; if(__builtin_sub_overflow(raw, other.raw, &ret.raw)) { overflow(); } return ret; }
-    Unsigned operator*(Unsigned other) const { Unsigned ret; if(__builtin_mul_overflow(raw, other.raw, &ret.raw)) { overflow(); } return ret; }
-    Unsigned operator/(Unsigned other) const { if(other == 0) { divByZero(); } Unsigned ret; ret.raw = raw / other.raw; return ret; }
+    Unsigned operator+(Unsigned other) const { Unsigned ret; if(__builtin_add_overflow(raw, other.raw, &ret.raw)) { integer_::overflow(); } return ret; }
+    Unsigned operator-(Unsigned other) const { Unsigned ret; if(__builtin_sub_overflow(raw, other.raw, &ret.raw)) { integer_::overflow(); } return ret; }
+    Unsigned operator*(Unsigned other) const { Unsigned ret; if(__builtin_mul_overflow(raw, other.raw, &ret.raw)) { integer_::overflow(); } return ret; }
+    Unsigned operator/(Unsigned other) const { if(other == 0) { integer_::divByZero(); } Unsigned ret; ret.raw = raw / other.raw; return ret; }
 
     Unsigned& operator+=(Unsigned other) { *this = *this + other; return *this; }
     Unsigned& operator-=(Unsigned other) { *this = *this - other; return *this; }
@@ -101,15 +101,15 @@ struct Signed {
 
     Signed() : raw(0) {}
 
-    Signed(signed int src) { if(__builtin_add_overflow(src, 0, &raw)) { overflow(); } }
-    Signed(unsigned int src) { if(__builtin_add_overflow(src, 0, &raw)) { overflow(); } }
-    Signed(signed long int src) { if(__builtin_add_overflow(src, 0, &raw)) { overflow(); } }
-    Signed(unsigned long int src) { if(__builtin_add_overflow(src, 0, &raw)) { overflow(); } }
-    Signed(signed long long int src) { if(__builtin_add_overflow(src, 0, &raw)) { overflow(); } }
-    Signed(unsigned long long int src) { if(__builtin_add_overflow(src, 0, &raw)) { overflow(); } }
+    Signed(signed int src) { if(__builtin_add_overflow(src, 0, &raw)) { integer_::overflow(); } }
+    Signed(unsigned int src) { if(__builtin_add_overflow(src, 0, &raw)) { integer_::overflow(); } }
+    Signed(signed long int src) { if(__builtin_add_overflow(src, 0, &raw)) { integer_::overflow(); } }
+    Signed(unsigned long int src) { if(__builtin_add_overflow(src, 0, &raw)) { integer_::overflow(); } }
+    Signed(signed long long int src) { if(__builtin_add_overflow(src, 0, &raw)) { integer_::overflow(); } }
+    Signed(unsigned long long int src) { if(__builtin_add_overflow(src, 0, &raw)) { integer_::overflow(); } }
 
-    template <typename T, typename = Void<typename IsIntWrapper<T>::Yes>>
-    explicit Signed(T src) { if(__builtin_add_overflow(src.raw, 0, &raw)) { overflow(); } }
+    template <typename T, typename = VoidT<typename integer_::IsIntWrapper<T>::Yes>>
+    explicit Signed(T src) { if(__builtin_add_overflow(src.raw, 0, &raw)) { integer_::overflow(); } }
 
     bool operator==(Signed other) const { return raw == other.raw; }
     bool operator!=(Signed other) const { return raw != other.raw; }
@@ -118,11 +118,11 @@ struct Signed {
     bool operator<=(Signed other) const { return raw <= other.raw; }
     bool operator>=(Signed other) const { return raw >= other.raw; }
 
-    Signed operator-() const { Signed ret; if(__builtin_sub_overflow((S)0, raw, &ret.raw)) { overflow(); } return ret; }
-    Signed operator+(Signed other) const { Signed ret; if(__builtin_add_overflow(raw, other.raw, &ret.raw)) { overflow(); } return ret; }
-    Signed operator-(Signed other) const { Signed ret; if(__builtin_sub_overflow(raw, other.raw, &ret.raw)) { overflow(); } return ret; }
-    Signed operator*(Signed other) const { Signed ret; if(__builtin_mul_overflow(raw, other.raw, &ret.raw)) { overflow(); } return ret; }
-    Signed operator/(Signed other) const { if(other == 0) { divByZero(); } if(other == -1) { return -(*this); } Signed ret; ret.raw = raw / other.raw; return ret; }
+    Signed operator-() const { Signed ret; if(__builtin_sub_overflow((S)0, raw, &ret.raw)) { integer_::overflow(); } return ret; }
+    Signed operator+(Signed other) const { Signed ret; if(__builtin_add_overflow(raw, other.raw, &ret.raw)) { integer_::overflow(); } return ret; }
+    Signed operator-(Signed other) const { Signed ret; if(__builtin_sub_overflow(raw, other.raw, &ret.raw)) { integer_::overflow(); } return ret; }
+    Signed operator*(Signed other) const { Signed ret; if(__builtin_mul_overflow(raw, other.raw, &ret.raw)) { integer_::overflow(); } return ret; }
+    Signed operator/(Signed other) const { if(other == 0) { integer_::divByZero(); } if(other == -1) { return -(*this); } Signed ret; ret.raw = raw / other.raw; return ret; }
 
     Signed& operator+=(Signed other) { *this = *this + other; return *this; }
     Signed& operator-=(Signed other) { *this = *this - other; return *this; }
@@ -153,7 +153,7 @@ struct UnsignedWrap {
     UnsignedWrap(signed long long int src) : raw((U)src) { }
     UnsignedWrap(unsigned long long int src) : raw((U)src) { }
 
-    template <typename T, typename = Void<typename IsIntWrapper<T>::Yes>>
+    template <typename T, typename = VoidT<typename integer_::IsIntWrapper<T>::Yes>>
     explicit UnsignedWrap(T src) : raw((U)src.raw) { }
 
     bool operator==(UnsignedWrap other) const { return raw == other.raw; }
@@ -167,7 +167,7 @@ struct UnsignedWrap {
     UnsignedWrap operator+(UnsignedWrap other) const { UnsignedWrap ret; ret.raw = raw + other.raw; return ret; }
     UnsignedWrap operator-(UnsignedWrap other) const { UnsignedWrap ret; ret.raw = raw - other.raw; return ret; }
     UnsignedWrap operator*(UnsignedWrap other) const { UnsignedWrap ret; ret.raw = raw * other.raw; return ret; }
-    UnsignedWrap operator/(UnsignedWrap other) const { if(other == 0) { divByZero(); } UnsignedWrap ret; ret.raw = raw / other.raw; return ret; }
+    UnsignedWrap operator/(UnsignedWrap other) const { if(other == 0) { integer_::divByZero(); } UnsignedWrap ret; ret.raw = raw / other.raw; return ret; }
 
     UnsignedWrap& operator+=(UnsignedWrap other) { *this = *this + other; return *this; }
     UnsignedWrap& operator-=(UnsignedWrap other) { *this = *this - other; return *this; }
@@ -198,7 +198,7 @@ struct SignedWrap {
     SignedWrap(signed long long int src) : raw((S)src) { }
     SignedWrap(unsigned long long int src) : raw((S)src) { }
 
-    template <typename T, typename = Void<typename IsIntWrapper<T>::Yes>>
+    template <typename T, typename = VoidT<typename integer_::IsIntWrapper<T>::Yes>>
     explicit SignedWrap(T src) : raw((S)src.raw) { }
 
     bool operator==(SignedWrap other) const { return raw == other.raw; }
@@ -212,7 +212,7 @@ struct SignedWrap {
     SignedWrap operator+(SignedWrap other) const { SignedWrap ret; ret.raw = (S)((U)raw + (U)other.raw); return ret; }
     SignedWrap operator-(SignedWrap other) const { SignedWrap ret; ret.raw = (S)((U)raw - (U)other.raw); return ret; }
     SignedWrap operator*(SignedWrap other) const { SignedWrap ret; ret.raw = (S)((U)raw * (U)other.raw); return ret; }
-    SignedWrap operator/(SignedWrap other) const { if(other == 0) { divByZero(); } if(other == -1) { return -(*this); } SignedWrap ret; ret.raw = raw / other.raw; return ret; }
+    SignedWrap operator/(SignedWrap other) const { if(other == 0) { integer_::divByZero(); } if(other == -1) { return -(*this); } SignedWrap ret; ret.raw = raw / other.raw; return ret; }
 
     SignedWrap& operator+=(SignedWrap other) { *this = *this + other; return *this; }
     SignedWrap& operator-=(SignedWrap other) { *this = *this - other; return *this; }
@@ -225,67 +225,69 @@ struct SignedWrap {
     SignedWrap operator--(int) { SignedWrap ret = *this; --*this; return ret; }
 };
 
-template <typename T, typename = Void<typename IsIntWrapper<T>::Yes>> bool operator==(signed int a, T b) { return (T)a == b; }
-template <typename T, typename = Void<typename IsIntWrapper<T>::Yes>> bool operator==(unsigned int a, T b) { return (T)a == b; }
-template <typename T, typename = Void<typename IsIntWrapper<T>::Yes>> bool operator==(signed long int a, T b) { return (T)a == b; }
-template <typename T, typename = Void<typename IsIntWrapper<T>::Yes>> bool operator==(unsigned long int a, T b) { return (T)a == b; }
-template <typename T, typename = Void<typename IsIntWrapper<T>::Yes>> bool operator==(signed long long int a, T b) { return (T)a == b; }
-template <typename T, typename = Void<typename IsIntWrapper<T>::Yes>> bool operator==(unsigned long long int a, T b) { return (T)a == b; }
-template <typename T, typename = Void<typename IsIntWrapper<T>::Yes>> bool operator!=(signed int a, T b) { return (T)a != b; }
-template <typename T, typename = Void<typename IsIntWrapper<T>::Yes>> bool operator!=(unsigned int a, T b) { return (T)a != b; }
-template <typename T, typename = Void<typename IsIntWrapper<T>::Yes>> bool operator!=(signed long int a, T b) { return (T)a != b; }
-template <typename T, typename = Void<typename IsIntWrapper<T>::Yes>> bool operator!=(unsigned long int a, T b) { return (T)a != b; }
-template <typename T, typename = Void<typename IsIntWrapper<T>::Yes>> bool operator!=(signed long long int a, T b) { return (T)a != b; }
-template <typename T, typename = Void<typename IsIntWrapper<T>::Yes>> bool operator!=(unsigned long long int a, T b) { return (T)a != b; }
-template <typename T, typename = Void<typename IsIntWrapper<T>::Yes>> bool operator<(signed int a, T b) { return (T)a < b; }
-template <typename T, typename = Void<typename IsIntWrapper<T>::Yes>> bool operator<(unsigned int a, T b) { return (T)a < b; }
-template <typename T, typename = Void<typename IsIntWrapper<T>::Yes>> bool operator<(signed long int a, T b) { return (T)a < b; }
-template <typename T, typename = Void<typename IsIntWrapper<T>::Yes>> bool operator<(unsigned long int a, T b) { return (T)a < b; }
-template <typename T, typename = Void<typename IsIntWrapper<T>::Yes>> bool operator<(signed long long int a, T b) { return (T)a < b; }
-template <typename T, typename = Void<typename IsIntWrapper<T>::Yes>> bool operator<(unsigned long long int a, T b) { return (T)a < b; }
-template <typename T, typename = Void<typename IsIntWrapper<T>::Yes>> bool operator>(signed int a, T b) { return (T)a > b; }
-template <typename T, typename = Void<typename IsIntWrapper<T>::Yes>> bool operator>(unsigned int a, T b) { return (T)a > b; }
-template <typename T, typename = Void<typename IsIntWrapper<T>::Yes>> bool operator>(signed long int a, T b) { return (T)a > b; }
-template <typename T, typename = Void<typename IsIntWrapper<T>::Yes>> bool operator>(unsigned long int a, T b) { return (T)a > b; }
-template <typename T, typename = Void<typename IsIntWrapper<T>::Yes>> bool operator>(signed long long int a, T b) { return (T)a > b; }
-template <typename T, typename = Void<typename IsIntWrapper<T>::Yes>> bool operator>(unsigned long long int a, T b) { return (T)a > b; }
-template <typename T, typename = Void<typename IsIntWrapper<T>::Yes>> bool operator<=(signed int a, T b) { return (T)a <= b; }
-template <typename T, typename = Void<typename IsIntWrapper<T>::Yes>> bool operator<=(unsigned int a, T b) { return (T)a <= b; }
-template <typename T, typename = Void<typename IsIntWrapper<T>::Yes>> bool operator<=(signed long int a, T b) { return (T)a <= b; }
-template <typename T, typename = Void<typename IsIntWrapper<T>::Yes>> bool operator<=(unsigned long int a, T b) { return (T)a <= b; }
-template <typename T, typename = Void<typename IsIntWrapper<T>::Yes>> bool operator<=(signed long long int a, T b) { return (T)a <= b; }
-template <typename T, typename = Void<typename IsIntWrapper<T>::Yes>> bool operator<=(unsigned long long int a, T b) { return (T)a <= b; }
-template <typename T, typename = Void<typename IsIntWrapper<T>::Yes>> bool operator>=(signed int a, T b) { return (T)a >= b; }
-template <typename T, typename = Void<typename IsIntWrapper<T>::Yes>> bool operator>=(unsigned int a, T b) { return (T)a >= b; }
-template <typename T, typename = Void<typename IsIntWrapper<T>::Yes>> bool operator>=(signed long int a, T b) { return (T)a >= b; }
-template <typename T, typename = Void<typename IsIntWrapper<T>::Yes>> bool operator>=(unsigned long int a, T b) { return (T)a >= b; }
-template <typename T, typename = Void<typename IsIntWrapper<T>::Yes>> bool operator>=(signed long long int a, T b) { return (T)a >= b; }
-template <typename T, typename = Void<typename IsIntWrapper<T>::Yes>> bool operator>=(unsigned long long int a, T b) { return (T)a >= b; }
+template <typename T, typename = VoidT<typename integer_::IsIntWrapper<T>::Yes>> bool operator==(signed int a, T b) { return (T)a == b; }
+template <typename T, typename = VoidT<typename integer_::IsIntWrapper<T>::Yes>> bool operator==(unsigned int a, T b) { return (T)a == b; }
+template <typename T, typename = VoidT<typename integer_::IsIntWrapper<T>::Yes>> bool operator==(signed long int a, T b) { return (T)a == b; }
+template <typename T, typename = VoidT<typename integer_::IsIntWrapper<T>::Yes>> bool operator==(unsigned long int a, T b) { return (T)a == b; }
+template <typename T, typename = VoidT<typename integer_::IsIntWrapper<T>::Yes>> bool operator==(signed long long int a, T b) { return (T)a == b; }
+template <typename T, typename = VoidT<typename integer_::IsIntWrapper<T>::Yes>> bool operator==(unsigned long long int a, T b) { return (T)a == b; }
+template <typename T, typename = VoidT<typename integer_::IsIntWrapper<T>::Yes>> bool operator!=(signed int a, T b) { return (T)a != b; }
+template <typename T, typename = VoidT<typename integer_::IsIntWrapper<T>::Yes>> bool operator!=(unsigned int a, T b) { return (T)a != b; }
+template <typename T, typename = VoidT<typename integer_::IsIntWrapper<T>::Yes>> bool operator!=(signed long int a, T b) { return (T)a != b; }
+template <typename T, typename = VoidT<typename integer_::IsIntWrapper<T>::Yes>> bool operator!=(unsigned long int a, T b) { return (T)a != b; }
+template <typename T, typename = VoidT<typename integer_::IsIntWrapper<T>::Yes>> bool operator!=(signed long long int a, T b) { return (T)a != b; }
+template <typename T, typename = VoidT<typename integer_::IsIntWrapper<T>::Yes>> bool operator!=(unsigned long long int a, T b) { return (T)a != b; }
+template <typename T, typename = VoidT<typename integer_::IsIntWrapper<T>::Yes>> bool operator<(signed int a, T b) { return (T)a < b; }
+template <typename T, typename = VoidT<typename integer_::IsIntWrapper<T>::Yes>> bool operator<(unsigned int a, T b) { return (T)a < b; }
+template <typename T, typename = VoidT<typename integer_::IsIntWrapper<T>::Yes>> bool operator<(signed long int a, T b) { return (T)a < b; }
+template <typename T, typename = VoidT<typename integer_::IsIntWrapper<T>::Yes>> bool operator<(unsigned long int a, T b) { return (T)a < b; }
+template <typename T, typename = VoidT<typename integer_::IsIntWrapper<T>::Yes>> bool operator<(signed long long int a, T b) { return (T)a < b; }
+template <typename T, typename = VoidT<typename integer_::IsIntWrapper<T>::Yes>> bool operator<(unsigned long long int a, T b) { return (T)a < b; }
+template <typename T, typename = VoidT<typename integer_::IsIntWrapper<T>::Yes>> bool operator>(signed int a, T b) { return (T)a > b; }
+template <typename T, typename = VoidT<typename integer_::IsIntWrapper<T>::Yes>> bool operator>(unsigned int a, T b) { return (T)a > b; }
+template <typename T, typename = VoidT<typename integer_::IsIntWrapper<T>::Yes>> bool operator>(signed long int a, T b) { return (T)a > b; }
+template <typename T, typename = VoidT<typename integer_::IsIntWrapper<T>::Yes>> bool operator>(unsigned long int a, T b) { return (T)a > b; }
+template <typename T, typename = VoidT<typename integer_::IsIntWrapper<T>::Yes>> bool operator>(signed long long int a, T b) { return (T)a > b; }
+template <typename T, typename = VoidT<typename integer_::IsIntWrapper<T>::Yes>> bool operator>(unsigned long long int a, T b) { return (T)a > b; }
+template <typename T, typename = VoidT<typename integer_::IsIntWrapper<T>::Yes>> bool operator<=(signed int a, T b) { return (T)a <= b; }
+template <typename T, typename = VoidT<typename integer_::IsIntWrapper<T>::Yes>> bool operator<=(unsigned int a, T b) { return (T)a <= b; }
+template <typename T, typename = VoidT<typename integer_::IsIntWrapper<T>::Yes>> bool operator<=(signed long int a, T b) { return (T)a <= b; }
+template <typename T, typename = VoidT<typename integer_::IsIntWrapper<T>::Yes>> bool operator<=(unsigned long int a, T b) { return (T)a <= b; }
+template <typename T, typename = VoidT<typename integer_::IsIntWrapper<T>::Yes>> bool operator<=(signed long long int a, T b) { return (T)a <= b; }
+template <typename T, typename = VoidT<typename integer_::IsIntWrapper<T>::Yes>> bool operator<=(unsigned long long int a, T b) { return (T)a <= b; }
+template <typename T, typename = VoidT<typename integer_::IsIntWrapper<T>::Yes>> bool operator>=(signed int a, T b) { return (T)a >= b; }
+template <typename T, typename = VoidT<typename integer_::IsIntWrapper<T>::Yes>> bool operator>=(unsigned int a, T b) { return (T)a >= b; }
+template <typename T, typename = VoidT<typename integer_::IsIntWrapper<T>::Yes>> bool operator>=(signed long int a, T b) { return (T)a >= b; }
+template <typename T, typename = VoidT<typename integer_::IsIntWrapper<T>::Yes>> bool operator>=(unsigned long int a, T b) { return (T)a >= b; }
+template <typename T, typename = VoidT<typename integer_::IsIntWrapper<T>::Yes>> bool operator>=(signed long long int a, T b) { return (T)a >= b; }
+template <typename T, typename = VoidT<typename integer_::IsIntWrapper<T>::Yes>> bool operator>=(unsigned long long int a, T b) { return (T)a >= b; }
 
-template <typename T, typename = Void<typename IsIntWrapper<T>::Yes>> T operator+(signed int a, T b) { return (T)a + b; }
-template <typename T, typename = Void<typename IsIntWrapper<T>::Yes>> T operator+(unsigned int a, T b) { return (T)a + b; }
-template <typename T, typename = Void<typename IsIntWrapper<T>::Yes>> T operator+(signed long int a, T b) { return (T)a + b; }
-template <typename T, typename = Void<typename IsIntWrapper<T>::Yes>> T operator+(unsigned long int a, T b) { return (T)a + b; }
-template <typename T, typename = Void<typename IsIntWrapper<T>::Yes>> T operator+(signed long long int a, T b) { return (T)a + b; }
-template <typename T, typename = Void<typename IsIntWrapper<T>::Yes>> T operator+(unsigned long long int a, T b) { return (T)a + b; }
-template <typename T, typename = Void<typename IsIntWrapper<T>::Yes>> T operator-(signed int a, T b) { return (T)a - b; }
-template <typename T, typename = Void<typename IsIntWrapper<T>::Yes>> T operator-(unsigned int a, T b) { return (T)a - b; }
-template <typename T, typename = Void<typename IsIntWrapper<T>::Yes>> T operator-(signed long int a, T b) { return (T)a - b; }
-template <typename T, typename = Void<typename IsIntWrapper<T>::Yes>> T operator-(unsigned long int a, T b) { return (T)a - b; }
-template <typename T, typename = Void<typename IsIntWrapper<T>::Yes>> T operator-(signed long long int a, T b) { return (T)a - b; }
-template <typename T, typename = Void<typename IsIntWrapper<T>::Yes>> T operator-(unsigned long long int a, T b) { return (T)a - b; }
-template <typename T, typename = Void<typename IsIntWrapper<T>::Yes>> T operator*(signed int a, T b) { return (T)a * b; }
-template <typename T, typename = Void<typename IsIntWrapper<T>::Yes>> T operator*(unsigned int a, T b) { return (T)a * b; }
-template <typename T, typename = Void<typename IsIntWrapper<T>::Yes>> T operator*(signed long int a, T b) { return (T)a * b; }
-template <typename T, typename = Void<typename IsIntWrapper<T>::Yes>> T operator*(unsigned long int a, T b) { return (T)a * b; }
-template <typename T, typename = Void<typename IsIntWrapper<T>::Yes>> T operator*(signed long long int a, T b) { return (T)a * b; }
-template <typename T, typename = Void<typename IsIntWrapper<T>::Yes>> T operator*(unsigned long long int a, T b) { return (T)a * b; }
-template <typename T, typename = Void<typename IsIntWrapper<T>::Yes>> T operator/(signed int a, T b) { return (T)a / b; }
-template <typename T, typename = Void<typename IsIntWrapper<T>::Yes>> T operator/(unsigned int a, T b) { return (T)a / b; }
-template <typename T, typename = Void<typename IsIntWrapper<T>::Yes>> T operator/(signed long int a, T b) { return (T)a / b; }
-template <typename T, typename = Void<typename IsIntWrapper<T>::Yes>> T operator/(unsigned long int a, T b) { return (T)a / b; }
-template <typename T, typename = Void<typename IsIntWrapper<T>::Yes>> T operator/(signed long long int a, T b) { return (T)a / b; }
-template <typename T, typename = Void<typename IsIntWrapper<T>::Yes>> T operator/(unsigned long long int a, T b) { return (T)a / b; }
+template <typename T, typename = VoidT<typename integer_::IsIntWrapper<T>::Yes>> T operator+(signed int a, T b) { return (T)a + b; }
+template <typename T, typename = VoidT<typename integer_::IsIntWrapper<T>::Yes>> T operator+(unsigned int a, T b) { return (T)a + b; }
+template <typename T, typename = VoidT<typename integer_::IsIntWrapper<T>::Yes>> T operator+(signed long int a, T b) { return (T)a + b; }
+template <typename T, typename = VoidT<typename integer_::IsIntWrapper<T>::Yes>> T operator+(unsigned long int a, T b) { return (T)a + b; }
+template <typename T, typename = VoidT<typename integer_::IsIntWrapper<T>::Yes>> T operator+(signed long long int a, T b) { return (T)a + b; }
+template <typename T, typename = VoidT<typename integer_::IsIntWrapper<T>::Yes>> T operator+(unsigned long long int a, T b) { return (T)a + b; }
+template <typename T, typename = VoidT<typename integer_::IsIntWrapper<T>::Yes>> T operator-(signed int a, T b) { return (T)a - b; }
+template <typename T, typename = VoidT<typename integer_::IsIntWrapper<T>::Yes>> T operator-(unsigned int a, T b) { return (T)a - b; }
+template <typename T, typename = VoidT<typename integer_::IsIntWrapper<T>::Yes>> T operator-(signed long int a, T b) { return (T)a - b; }
+template <typename T, typename = VoidT<typename integer_::IsIntWrapper<T>::Yes>> T operator-(unsigned long int a, T b) { return (T)a - b; }
+template <typename T, typename = VoidT<typename integer_::IsIntWrapper<T>::Yes>> T operator-(signed long long int a, T b) { return (T)a - b; }
+template <typename T, typename = VoidT<typename integer_::IsIntWrapper<T>::Yes>> T operator-(unsigned long long int a, T b) { return (T)a - b; }
+template <typename T, typename = VoidT<typename integer_::IsIntWrapper<T>::Yes>> T operator*(signed int a, T b) { return (T)a * b; }
+template <typename T, typename = VoidT<typename integer_::IsIntWrapper<T>::Yes>> T operator*(unsigned int a, T b) { return (T)a * b; }
+template <typename T, typename = VoidT<typename integer_::IsIntWrapper<T>::Yes>> T operator*(signed long int a, T b) { return (T)a * b; }
+template <typename T, typename = VoidT<typename integer_::IsIntWrapper<T>::Yes>> T operator*(unsigned long int a, T b) { return (T)a * b; }
+template <typename T, typename = VoidT<typename integer_::IsIntWrapper<T>::Yes>> T operator*(signed long long int a, T b) { return (T)a * b; }
+template <typename T, typename = VoidT<typename integer_::IsIntWrapper<T>::Yes>> T operator*(unsigned long long int a, T b) { return (T)a * b; }
+template <typename T, typename = VoidT<typename integer_::IsIntWrapper<T>::Yes>> T operator/(signed int a, T b) { return (T)a / b; }
+template <typename T, typename = VoidT<typename integer_::IsIntWrapper<T>::Yes>> T operator/(unsigned int a, T b) { return (T)a / b; }
+template <typename T, typename = VoidT<typename integer_::IsIntWrapper<T>::Yes>> T operator/(signed long int a, T b) { return (T)a / b; }
+template <typename T, typename = VoidT<typename integer_::IsIntWrapper<T>::Yes>> T operator/(unsigned long int a, T b) { return (T)a / b; }
+template <typename T, typename = VoidT<typename integer_::IsIntWrapper<T>::Yes>> T operator/(signed long long int a, T b) { return (T)a / b; }
+template <typename T, typename = VoidT<typename integer_::IsIntWrapper<T>::Yes>> T operator/(unsigned long long int a, T b) { return (T)a / b; }
+
+namespace integer_ {
 
 template <typename U, typename S, bool IsSize>
 struct Wrappers {

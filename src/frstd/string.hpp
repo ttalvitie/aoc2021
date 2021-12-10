@@ -146,10 +146,6 @@ T signedIntegerFromStringImpl(const String& str) {
 
 }
 
-// To make ADL work, we need to implement the toString functions for integers in the integer_
-// subnamespace as the integer classes are defined there
-namespace integer_ {
-
 inline String toString(i8 val) { return string_::integerToStringImpl(val); }
 inline String toString(i8w val) { return string_::integerToStringImpl(val); }
 inline String toString(u8 val) { return string_::unsignedIntegerToStringImpl(val); }
@@ -170,8 +166,6 @@ inline String toString(isz val) { return string_::integerToStringImpl(val); }
 inline String toString(iszw val) { return string_::integerToStringImpl(val); }
 inline String toString(usz val) { return string_::unsignedIntegerToStringImpl(val); }
 inline String toString(uszw val) { return string_::unsignedIntegerToStringImpl(val); }
-
-}
 
 template <typename T>
 struct FromString {

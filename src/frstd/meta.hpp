@@ -38,4 +38,7 @@ T&& forward(RemoveReference<T>&& obj) {
     return (T&&)obj;
 }
 
+template <typename...>
+using VoidT = void;
+
 }
