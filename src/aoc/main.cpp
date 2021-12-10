@@ -344,12 +344,12 @@ void run6(String input) {
     writeStdout(toString(total2) + "\n");
 }
 
-void sort(MutArraySlice<i32> s, DynArray<i32>& tmp) {
+void sort(ArraySlice<i32> s, DynArray<i32>& tmp) {
     if(len(s) <= 1) {
         return;
     }
-    MutArraySlice<i32> a = mutSlice(s, 0, len(s) / 2);
-    MutArraySlice<i32> b = mutSlice(s, len(s) / 2);
+    ArraySlice<i32> a = slice(s, 0, len(s) / 2);
+    ArraySlice<i32> b = slice(s, len(s) / 2);
     sort(a, tmp);
     sort(b, tmp);
     usz i = 0;
@@ -380,7 +380,7 @@ void run7(String input) {
         xs.push(fromString<i32>(elems[i]));
     }
     DynArray<i32> tmp;
-    sort(mutSlice(xs), tmp);
+    sort(slice(xs), tmp);
     i32 mid = xs[len(xs) / 2];
     i32 ret = 0;
     for(usz i = 0; i < len(xs); ++i) {
@@ -567,7 +567,7 @@ void run9(String input) {
         }
     }
     DynArray<i32> tmp;
-    sort(mutSlice(sizes), tmp);
+    sort(slice(sizes), tmp);
 
     i32 ret2 = 1;
     for(usz i = len(sizes) - 3; i < len(sizes); ++i) {
@@ -576,12 +576,12 @@ void run9(String input) {
     writeStdout(toString(ret2) + "\n");
 }
 
-void sort(MutArraySlice<u64> s, DynArray<u64>& tmp) {
+void sort(ArraySlice<u64> s, DynArray<u64>& tmp) {
     if(len(s) <= 1) {
         return;
     }
-    MutArraySlice<u64> a = mutSlice(s, 0, len(s) / 2);
-    MutArraySlice<u64> b = mutSlice(s, len(s) / 2);
+    ArraySlice<u64> a = slice(s, 0, len(s) / 2);
+    ArraySlice<u64> b = slice(s, len(s) / 2);
     sort(a, tmp);
     sort(b, tmp);
     usz i = 0;
@@ -645,7 +645,7 @@ void run10(String input) {
     }
     writeStdout(toString(ret1) + "\n");
     DynArray<u64> tmp;
-    sort(mutSlice(scores), tmp);
+    sort(slice(scores), tmp);
     writeStdout(toString(scores[len(scores) / 2]) + "\n");
 }
 

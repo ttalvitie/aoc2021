@@ -35,7 +35,6 @@ using frstd::Rc;
 using frstd::Option;
 
 using frstd::ArraySlice;
-using frstd::MutArraySlice;
 using frstd::DynArray;
 
 using frstd::String;
