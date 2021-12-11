@@ -68,10 +68,10 @@ struct String : public Iterable {
 inline usz len(const String& s) {
     return len(s.bytes);
 }
-inline usz len(const ConstStringSlice& s) {
+inline usz len(ConstStringSlice s) {
     return len(s.bytes);
 }
-inline usz len(const StringSlice& s) {
+inline usz len(StringSlice s) {
     return len(s.bytes);
 }
 
@@ -106,34 +106,31 @@ inline StringSlice slice(String& s) {
     return slice(s, 0);
 }
 
-inline ConstStringSlice slice(const ConstStringSlice& s, usz start, usz end) {
+inline ConstStringSlice slice(ConstStringSlice s, usz start, usz end) {
     return {{}, slice(s.bytes, start, end)};
 }
-inline ConstStringSlice slice(const ConstStringSlice& s, usz start) {
+inline ConstStringSlice slice(ConstStringSlice s, usz start) {
     return slice(s, start, len(s));
 }
-inline ConstStringSlice slice(const ConstStringSlice& s) {
+inline ConstStringSlice slice(ConstStringSlice s) {
     return slice(s, 0);
 }
 
-inline StringSlice slice(const StringSlice& s, usz start, usz end) {
+inline StringSlice slice(StringSlice s, usz start, usz end) {
     return {{}, slice(s.bytes, start, end)};
 }
-inline StringSlice slice(const StringSlice& s, usz start) {
+inline StringSlice slice(StringSlice s, usz start) {
     return slice(s, start, len(s));
 }
-inline StringSlice slice(const StringSlice& s) {
+inline StringSlice slice(StringSlice s) {
     return slice(s, 0);
 }
 
-inline auto createIterator(const ConstStringSlice& s) {
+inline auto createIterator(ConstStringSlice s) {
     return createIterator(s.bytes);
 }
-inline auto createIterator(const StringSlice& s) {
+inline auto createIterator(StringSlice s) {
     return createIterator(s.bytes);
-}
-inline auto createIterator(String&& a) {
-    return createIterator(move(a.bytes));
 }
 inline auto createIterator(String& a) {
     return createIterator(a.bytes);
@@ -141,6 +138,7 @@ inline auto createIterator(String& a) {
 inline auto createIterator(const String& a) {
     return createIterator(a.bytes);
 }
+void createIterator(String&& a) = delete;
 
 inline String operator+(const String& a, const String& b) {
     String ret;
@@ -309,10 +307,11 @@ auto stripImpl(T s) {
 
 }
 
-inline ConstStringSlice strip(const ConstStringSlice& s) { return string_::stripImpl(s); }
-inline StringSlice strip(const StringSlice& s) { return string_::stripImpl(s); }
+inline ConstStringSlice strip(ConstStringSlice s) { return string_::stripImpl(s); }
+inline StringSlice strip(StringSlice s) { return string_::stripImpl(s); }
 inline ConstStringSlice strip(const String& s) { return string_::stripImpl(slice(s)); }
 inline StringSlice strip(String& s) { return string_::stripImpl(slice(s)); }
+void strip(String&& s) = delete;
 
 inline DynArray<String> split(const String& str, u8 sep) {
     DynArray<String> ret;

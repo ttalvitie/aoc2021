@@ -78,22 +78,4 @@ RangeForEndIteratorAdapter end(T&&) {
     return RangeForEndIteratorAdapter();
 }
 
-template <typename T>
-struct RangeForConsumeWrapper {
-    T obj;
-};
-template <typename T>
-RangeForConsumeWrapper<RemoveReference<T>> consume(T&& obj) {
-    return {move(obj)};
-}
-
-template <typename T, typename = VoidT<typename IsIterable<T>::Yes>>
-auto begin(RangeForConsumeWrapper<T>& wrapper) {
-    return begin(move(wrapper.obj));
-}
-template <typename T, typename = VoidT<typename IsIterable<T>::Yes>>
-RangeForEndIteratorAdapter end(RangeForConsumeWrapper<T>&) {
-    return RangeForEndIteratorAdapter();
-}
-
 }

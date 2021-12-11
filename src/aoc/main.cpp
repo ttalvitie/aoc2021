@@ -712,6 +712,11 @@ void run11(String input) {
     writeStdout(toString(ret2) + "\n");
 }
 */
+
+String asd() {
+    return "MOI";
+}
+
 void run(const DynArray<String>& args) {
     frstd::LeakCheck leakCheck;
 

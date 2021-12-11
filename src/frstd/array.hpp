@@ -88,9 +88,9 @@ private:
     friend class ArraySlice;
 
     template <typename T2>
-    friend usz len(const ArraySlice<T2>& arr);
+    friend usz len(ArraySlice<T2> arr);
     template <typename T2>
-    friend ArraySlice<T2> slice(const ArraySlice<T2>& arr, usz start, usz end);
+    friend ArraySlice<T2> slice(ArraySlice<T2> arr, usz start, usz end);
     template <typename T2>
     friend ArraySlice<const T2> slice(const DynArray<T2>& arr, usz start, usz end);
     template <typename T2>
@@ -262,7 +262,7 @@ private:
 };
 
 template <typename T>
-usz len(const ArraySlice<T>& arr) {
+usz len(ArraySlice<T> arr) {
     return arr.len_;
 }
 
@@ -272,7 +272,7 @@ usz len(const DynArray<T>& arr) {
 }
 
 template <typename T>
-bool isEmpty(const ArraySlice<T>& arr) {
+bool isEmpty(ArraySlice<T> arr) {
     return len(arr) == 0;
 }
 
@@ -282,73 +282,73 @@ bool isEmpty(const DynArray<T>& arr) {
 }
 
 template <typename T>
-ArraySlice<T> slice(const ArraySlice<T>& arr, usz start, usz end) {
-    if(start > end || end > len(arr)) {
+ArraySlice<T> slice(ArraySlice<T> s, usz start, usz end) {
+    if(start > end || end > len(s)) {
         array_::indexOutOfBounds();
     }
 #ifdef FRSTD_DEBUG
-    return ArraySlice<T>(arr.data_ + start.raw, end - start, arr.dataRevisionIdx_, arr.revisionIdx_);
+    return ArraySlice<T>(s.data_ + start.raw, end - start, s.dataRevisionIdx_, s.revisionIdx_);
 #else
-    return ArraySlice<T>(arr.data_ + start.raw, end - start);
+    return ArraySlice<T>(s.data_ + start.raw, end - start);
 #endif
 }
 template <typename T>
-ArraySlice<T> slice(const ArraySlice<T>& arr, usz start) {
+ArraySlice<T> slice(ArraySlice<T> arr, usz start) {
     return slice(arr, start, len(arr));
 }
 template <typename T>
-ArraySlice<T> slice(const ArraySlice<T>& arr) {
+ArraySlice<T> slice(ArraySlice<T> arr) {
     return slice(arr, 0);
 }
 
 template <typename T>
-ArraySlice<const T> slice(const DynArray<T>& arr, usz start, usz end) {
-    if(start > end || end > len(arr)) {
+ArraySlice<const T> slice(const DynArray<T>& a, usz start, usz end) {
+    if(start > end || end > len(a)) {
         array_::indexOutOfBounds();
     }
 #ifdef FRSTD_DEBUG
-    if(isEmpty(arr.revisionIdx_)) {
-        arr.revisionIdx_ = Rc<usz>(0);
+    if(isEmpty(a.revisionIdx_)) {
+        a.revisionIdx_ = Rc<usz>(0);
     }
-    return ArraySlice<const T>(arr.data() + start.raw, end - start, getValue(arr.revisionIdx_));
+    return ArraySlice<const T>(a.data() + start.raw, end - start, getValue(a.revisionIdx_));
 #else
-    return ArraySlice<const T>(arr.data() + start.raw, end - start);
+    return ArraySlice<const T>(a.data() + start.raw, end - start);
 #endif
 }
 template <typename T>
-ArraySlice<const T> slice(const DynArray<T>& arr, usz start) {
-    return slice(arr, start, len(arr));
+ArraySlice<const T> slice(const DynArray<T>& a, usz start) {
+    return slice(a, start, len(a));
 }
 template <typename T>
-ArraySlice<const T> slice(const DynArray<T>& arr) {
-    return slice(arr, 0);
+ArraySlice<const T> slice(const DynArray<T>& a) {
+    return slice(a, 0);
 }
 
 template <typename T>
-ArraySlice<T> slice(DynArray<T>& arr, usz start, usz end) {
-    if(start > end || end > len(arr)) {
+ArraySlice<T> slice(DynArray<T>& a, usz start, usz end) {
+    if(start > end || end > len(a)) {
         array_::indexOutOfBounds();
     }
 #ifdef FRSTD_DEBUG
-    if(isEmpty(arr.revisionIdx_)) {
-        arr.revisionIdx_ = Rc<usz>(0);
+    if(isEmpty(a.revisionIdx_)) {
+        a.revisionIdx_ = Rc<usz>(0);
     }
-    return ArraySlice<T>(arr.data() + start.raw, end - start, getValue(arr.revisionIdx_));
+    return ArraySlice<T>(a.data() + start.raw, end - start, getValue(a.revisionIdx_));
 #else
-    return ArraySlice<T>(arr.data() + start.raw, end - start);
+    return ArraySlice<T>(a.data() + start.raw, end - start);
 #endif
 }
 template <typename T>
-ArraySlice<T> slice(DynArray<T>& arr, usz start) {
-    return slice(arr, start, len(arr));
+ArraySlice<T> slice(DynArray<T>& a, usz start) {
+    return slice(a, start, len(a));
 }
 template <typename T>
-ArraySlice<T> slice(DynArray<T>& arr) {
-    return slice(arr, 0);
+ArraySlice<T> slice(DynArray<T>& a) {
+    return slice(a, 0);
 }
 
 template <typename T>
-bool operator==(const ArraySlice<T>& a, const ArraySlice<T>& b) {
+bool operator==(ArraySlice<T> a, ArraySlice<T> b) {
     if(len(a) != len(b)) {
         return false;
     }
@@ -360,25 +360,25 @@ bool operator==(const ArraySlice<T>& a, const ArraySlice<T>& b) {
     return true;
 }
 template <typename T>
-bool operator!=(const ArraySlice<T>& a, const ArraySlice<T>& b) {
+bool operator!=(ArraySlice<T> a, ArraySlice<T> b) {
     return !(a == b);
 }
 
 template <typename T> bool operator==(const DynArray<T>& a, const DynArray<T>& b) { return slice(a) == slice(b); }
-template <typename T> bool operator==(const ArraySlice<T>& a, const DynArray<T>& b) { return slice(a) == slice(b); }
-template <typename T> bool operator==(const ArraySlice<const T>& a, const DynArray<T>& b) { return slice(a) == slice(b); }
-template <typename T> bool operator==(const DynArray<T>& a, const ArraySlice<T>& b) { return slice(a) == slice(b); }
-template <typename T> bool operator==(const DynArray<T>& a, const ArraySlice<const T>& b) { return slice(a) == slice(b); }
-template <typename T> bool operator==(const ArraySlice<T>& a, const ArraySlice<const T>& b) { return slice(a) == slice(b); }
-template <typename T> bool operator==(const ArraySlice<const T>& a, const ArraySlice<T>& b) { return slice(a) == slice(b); }
+template <typename T> bool operator==(ArraySlice<T> a, const DynArray<T>& b) { return slice(a) == slice(b); }
+template <typename T> bool operator==(ArraySlice<const T> a, const DynArray<T>& b) { return slice(a) == slice(b); }
+template <typename T> bool operator==(const DynArray<T>& a, ArraySlice<T> b) { return slice(a) == slice(b); }
+template <typename T> bool operator==(const DynArray<T>& a, ArraySlice<const T> b) { return slice(a) == slice(b); }
+template <typename T> bool operator==(ArraySlice<T> a, ArraySlice<const T> b) { return slice(a) == slice(b); }
+template <typename T> bool operator==(ArraySlice<const T> a, ArraySlice<T> b) { return slice(a) == slice(b); }
 
 template <typename T> bool operator!=(const DynArray<T>& a, const DynArray<T>& b) { return slice(a) != slice(b); }
-template <typename T> bool operator!=(const ArraySlice<T>& a, const DynArray<T>& b) { return slice(a) != slice(b); }
-template <typename T> bool operator!=(const ArraySlice<const T>& a, const DynArray<T>& b) { return slice(a) != slice(b); }
-template <typename T> bool operator!=(const DynArray<T>& a, const ArraySlice<T>& b) { return slice(a) != slice(b); }
-template <typename T> bool operator!=(const DynArray<T>& a, const ArraySlice<const T>& b) { return slice(a) != slice(b); }
-template <typename T> bool operator!=(const ArraySlice<T>& a, const ArraySlice<const T>& b) { return slice(a) != slice(b); }
-template <typename T> bool operator!=(const ArraySlice<const T>& a, const ArraySlice<T>& b) { return slice(a) != slice(b); }
+template <typename T> bool operator!=(ArraySlice<T> a, const DynArray<T>& b) { return slice(a) != slice(b); }
+template <typename T> bool operator!=(ArraySlice<const T> a, const DynArray<T>& b) { return slice(a) != slice(b); }
+template <typename T> bool operator!=(const DynArray<T>& a, ArraySlice<T> b) { return slice(a) != slice(b); }
+template <typename T> bool operator!=(const DynArray<T>& a, ArraySlice<const T> b) { return slice(a) != slice(b); }
+template <typename T> bool operator!=(ArraySlice<T> a, ArraySlice<const T> b) { return slice(a) != slice(b); }
+template <typename T> bool operator!=(ArraySlice<const T> a, ArraySlice<T> b) { return slice(a) != slice(b); }
 
 template <typename T>
 class ArraySliceIterator {
@@ -398,29 +398,8 @@ private:
 };
 
 template <typename T>
-class OwnedDynArrayIterator {
-public:
-    OwnedDynArrayIterator(DynArray<T> a) : array_(move(a)), idx_(0) {}
-
-    bool hasNext() const {
-        return idx_ < len(array_);
-    }
-    T&& next() {
-        return move(array_[idx_++]);
-    }
-
-private:
-    DynArray<T> array_;
-    usz idx_;
-};
-
-template <typename T>
 ArraySliceIterator<T> createIterator(ArraySlice<T> s) {
     return ArraySliceIterator<T>(move(s));
-}
-template <typename T>
-OwnedDynArrayIterator<T> createIterator(DynArray<T>&& a) {
-    return OwnedDynArrayIterator<T>(move(a));
 }
 template <typename T>
 ArraySliceIterator<T> createIterator(DynArray<T>& a) {
@@ -430,5 +409,7 @@ template <typename T>
 ArraySliceIterator<const T> createIterator(const DynArray<T>& a) {
     return createIterator(slice(a));
 }
+template <typename T>
+void createIterator(DynArray<T>&&) = delete;
 
 }
