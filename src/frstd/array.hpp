@@ -384,11 +384,6 @@ template <typename T>
 class ArraySliceIterator {
 public:
     ArraySliceIterator(ArraySlice<T> s) : slice_(move(s)), idx_(0) {}
-    ArraySliceIterator(ArraySliceIterator&&) = default;
-    ArraySliceIterator& operator=(ArraySliceIterator&&) = default;
-
-    ArraySliceIterator(const ArraySliceIterator&) = delete;
-    ArraySliceIterator& operator=(const ArraySliceIterator&) = delete;
 
     bool hasNext() const {
         return idx_ < len(slice_);

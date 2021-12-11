@@ -313,22 +313,62 @@ inline ConstStringSlice strip(const String& s) { return string_::stripImpl(slice
 inline StringSlice strip(String& s) { return string_::stripImpl(slice(s)); }
 void strip(String&& s) = delete;
 
-inline DynArray<String> split(const String& str, u8 sep) {
-    DynArray<String> ret;
-    String acc;
-    usz pos = 0;
-    while(pos < len(str)) {
-        u8 byte = str[pos++];
-        if(byte == sep) {
-            ret.push(move(acc));
-            acc = "";
-        } else {
-            acc.push(byte);
-        }
+template <typename T>
+class SplitIterator {
+public:
+    SplitIterator(T s, u8 sep) : slice_(s), sep_(sep), pos_(0) {}
+
+    bool hasNext() const {
+        return pos_ <= len(slice_);
     }
-    ret.push(move(acc));
-    return ret;
+
+    auto next() {
+        usz start = pos_;
+        while(pos_ < len(slice_) && slice_[pos_] != sep_) {
+            ++pos_;
+        }
+        usz end = pos_;
+        ++pos_;
+        return slice(slice_, start, end);
+    }
+
+private:
+    T slice_;
+    u8 sep_;
+    usz pos_;
+};
+
+template <typename T>
+class Split : public Iterable {
+public:
+    Split(T s, u8 sep) : slice_(s), sep_(sep) {}
+
+private:
+    T slice_;
+    u8 sep_;
+
+    template <typename T2>
+    friend SplitIterator<T2> createIterator(Split<T2> s);
+};
+
+template <typename T>
+SplitIterator<T> createIterator(Split<T> s) {
+    return SplitIterator(s.slice_, s.sep_);
 }
+
+inline auto split(ConstStringSlice s, u8 sep) {
+    return Split<ConstStringSlice>(s, sep);
+}
+inline auto split(StringSlice s, u8 sep) {
+    return Split<StringSlice>(s, sep);
+}
+inline auto split(const String& s, u8 sep) {
+    return split(slice(s), sep);
+}
+inline auto split(String& s, u8 sep) {
+    return split(slice(s), sep);
+}
+void split(String&& s, u8 sep) = delete;
 
 // TODO: move
 inline void writeStdout(const String& str) {

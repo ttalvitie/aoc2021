@@ -716,6 +716,11 @@ void run11(String input) {
 void run(const DynArray<String>& args) {
     frstd::LeakCheck leakCheck;
 
+    String x = "asd bsd csfd";
+    for(frstd::StringSlice x : split(x, ' ')) {
+        writeStderr(String(x) + "\n");
+    }
+
     if(len(args) != 1) {
         writeStderr("Usage: aoc2021 <day#>\n");
         return;
