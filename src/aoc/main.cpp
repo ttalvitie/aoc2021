@@ -649,6 +649,69 @@ void run10(String input) {
     writeStdout(toString(scores[len(scores) / 2]) + "\n");
 }
 
+usz flash(DynArray<String>& state, usz y, usz x) {
+    usz h = len(state);
+    usz w = len(state[0]);
+
+    usz ret = 1;
+    for(isz dy = -1; dy <= 1; ++dy) {
+        for(isz dx = -1; dx <= 1; ++dx) {
+            if(dy == 0 && dx == 0) continue;
+            isz y2i = (isz)y + dy;
+            isz x2i = (isz)x + dx;
+            if(y2i < 0 || y2i >= (isz)h || x2i < 0 || x2i >= (isz)w) continue;
+            usz y2 = (usz)y2i;
+            usz x2 = (usz)x2i;
+            ++state[y2][x2];
+            bool flashing = state[y2][x2] == ':';
+            if(state[y2][x2] == ';') state[y2][x2] = ':';
+            if(flashing) {
+                ret += flash(state, y2, x2);
+            }
+        }
+    }
+    return ret;
+}
+
+void run11(String input) {
+    DynArray<String> state = split(strip(input), '\n');
+    usz h = len(state);
+    usz w = len(state[0]);
+
+    usz ret1 = 0;
+    usz ret2;
+    for(usz i = 0;; ++i) {
+        usz count = 0;
+        for(usz y = 0; y < h; ++y) {
+            for(usz x = 0; x < w; ++x) {
+                ++state[y][x];
+                bool flashing = state[y][x] == ':';
+                if(state[y][x] == ';') state[y][x] = ':';
+                if(flashing) {
+                    count += flash(state, y, x);
+                }
+            }
+        }
+        for(usz y = 0; y < h; ++y) {
+            for(usz x = 0; x < w; ++x) {
+                if(state[y][x] == ':') {
+                    state[y][x] = '0';
+                }
+            }
+        }
+
+        if(i < 100) {
+            ret1 += count;
+        }
+        if(count == 100) {
+            ret2 = i + 1;
+            break;
+        }
+    }
+    writeStdout(toString(ret1) + "\n");
+    writeStdout(toString(ret2) + "\n");
+}
+
 void run(const DynArray<String>& args) {
     frstd::LeakCheck leakCheck;
 
@@ -687,6 +750,9 @@ void run(const DynArray<String>& args) {
     } else if(day == "10") {
         String input = readStdin();
         run10(move(input));
+    } else if(day == "11") {
+        String input = readStdin();
+        run11(move(input));
     } else {
         writeStderr("Unknown day\n");
     }

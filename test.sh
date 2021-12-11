@@ -5,7 +5,7 @@ set -o pipefail
 
 make -j5 debug release
 
-for i in {1..10}
+for i in {1..11}
 do
     echo "--- Day $i debug"
     ./aoc2021.debug $i < data/input$i.txt | diff - data/output$i.txt
