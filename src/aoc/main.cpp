@@ -713,10 +713,6 @@ void run11(String input) {
 }
 */
 
-String asd() {
-    return "MOI";
-}
-
 void run(const DynArray<String>& args) {
     frstd::LeakCheck leakCheck;
 
