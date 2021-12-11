@@ -39,6 +39,8 @@ using frstd::DynArray;
 
 using frstd::String;
 using frstd::fromString;
+using frstd::StringSlice;
+using frstd::ConstStringSlice;
 
 using frstd::writeStdout;
 using frstd::writeStderr;

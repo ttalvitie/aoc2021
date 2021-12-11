@@ -1,14 +1,16 @@
 #include <frstd/prelude.hpp>
 
 #include <frstd/baseutil.hpp>
-/*
+
 void run1(String input) {
-    DynArray<String> inputList = split(strip(input), '\n');
+    DynArray<i32> xs;
+    for(StringSlice elem : split(strip(input), '\n')) {
+        xs.push(fromString<i32>(String(elem)));
+    }
 
     i32 increaseCount = 0;
     i32 prev = -1;
-    for(const String& elem : inputList) {
-        i32 x = fromString<i32>(elem);
+    for(i32 x : xs) {
         if(prev != -1 && x > prev) {
             ++increaseCount;
         }
@@ -19,10 +21,10 @@ void run1(String input) {
 
     i32 sumIncreaseCount = 0;
     i32 prevSum;
-    for(usz i = 0; i < len(inputList) - 2; ++i) {
+    for(usz i = 0; i < len(xs) - 2; ++i) {
         i32 sum = 0;
         for(usz j = 0; j < 3; ++j) {
-            sum += fromString<i32>(strip(inputList[i + j]));
+            sum += xs[i + j];
         }
         if(i != 0 && sum > prevSum) {
             ++sumIncreaseCount;
@@ -32,7 +34,7 @@ void run1(String input) {
 
     writeStdout(toString(sumIncreaseCount) + "\n");
 }
-
+/*
 void run2(String input) {
     DynArray<String> lines = split(strip(input), '\n');
 
@@ -716,20 +718,15 @@ void run11(String input) {
 void run(const DynArray<String>& args) {
     frstd::LeakCheck leakCheck;
 
-    String x = "asd bsd csfd";
-    for(frstd::StringSlice x : split(x, ' ')) {
-        writeStderr(String(x) + "\n");
-    }
-
     if(len(args) != 1) {
         writeStderr("Usage: aoc2021 <day#>\n");
         return;
     }
     String day = args[0];
-/*    if(day == "1") {
+    if(day == "1") {
         String input = readStdin();
         run1(move(input));
-    } else if(day == "2") {
+/*    } else if(day == "2") {
         String input = readStdin();
         run2(move(input));
     } else if(day == "3") {
@@ -759,7 +756,7 @@ void run(const DynArray<String>& args) {
     } else if(day == "11") {
         String input = readStdin();
         run11(move(input));
-    } else {
+*/    } else {
         writeStderr("Unknown day\n");
     }
-*/}
+}
